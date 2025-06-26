@@ -1,0 +1,12 @@
+services:
+  valkey:
+    container_name: cause-a-bracket-valkey
+    image: valkey/valkey:8.1
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
