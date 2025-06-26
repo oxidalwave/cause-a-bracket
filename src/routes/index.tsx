@@ -1,7 +1,8 @@
 import { faker } from "@faker-js/faker";
-import { Stack } from "@mantine/core";
+import { Card, Flex } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import TsLink from "~/components/TsLink";
+import Twist from "~/components/Twist";
 
 export const Route = createFileRoute("/")({
 	component: Home,
@@ -9,15 +10,22 @@ export const Route = createFileRoute("/")({
 
 function Home() {
 	return (
-		<Stack>
-			<TsLink.Button
-				to="/$id"
-				params={{
-					id: faker.string.uuid(),
-				}}
-			>
-				Create a new Bracket
-			</TsLink.Button>
-		</Stack>
+		<Flex align="center" justify="center" h="100%">
+			<Twist>
+				<Card>
+					<Card.Section>
+						<TsLink.Button
+							to="/brackets/$id"
+							params={{
+								id: faker.string.uuid(),
+							}}
+							size="xl"
+						>
+							Cause a Bracket!
+						</TsLink.Button>
+					</Card.Section>
+				</Card>
+			</Twist>
+		</Flex>
 	);
 }

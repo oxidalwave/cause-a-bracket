@@ -1,4 +1,4 @@
-import { Box, Button, Group, Stack, TextInput } from "@mantine/core";
+import { Box, Button, Card, Group, Stack, TextInput } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
@@ -12,7 +12,7 @@ const addToBracket = createServerFn({ method: "POST", response: "data" })
 	.validator(z.object({ id: z.string(), item: z.string() }))
 	.handler(async ({ data }) => await valkey.rpush(data.id, data.item));
 
-export const Route = createFileRoute("/$id")({
+export const Route = createFileRoute("/brackets/$id")({
 	component: Home,
 	params: z.object({ id: z.string() }),
 	loader: async ({ params }) => ({
@@ -28,17 +28,23 @@ function Home() {
 	return (
 		<Stack>
 			<Group>
-				<form
-					action={async (formData) => {
-						await addToBracket({
-							data: { id, item: formData.get("item") as string },
-						});
-						navigate({ to: "/$id", params: { id } });
-					}}
-				>
-					<TextInput name="item" />
-					<Button type="submit">Submit</Button>
-				</form>
+				<Card withBorder>
+					<Card.Section>
+						<form
+							action={async (formData) => {
+								await addToBracket({
+									data: { id, item: formData.get("item") as string },
+								});
+								navigate({ to: "/brackets/$id", params: { id } });
+							}}
+						>
+							<Stack>
+								<TextInput name="item" />
+								<Button type="submit">Submit</Button>
+							</Stack>
+						</form>
+					</Card.Section>
+				</Card>
 			</Group>
 			<Stack>
 				{brackets.map((b: string) => (

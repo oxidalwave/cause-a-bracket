@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import mantineCss from "@mantine/core/styles.css?url";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
@@ -10,9 +11,11 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
+import Shell from "~/components/layout/Shell";
 import { NotFound } from "~/components/NotFound";
 import Providers from "~/components/util/Providers";
 import appCss from "~/styles/app.css?url";
+
 import { seo } from "~/utils/seo";
 
 export const Route = createRootRouteWithContext<{
@@ -34,6 +37,7 @@ export const Route = createRootRouteWithContext<{
 		],
 		links: [
 			{ rel: "stylesheet", href: appCss },
+			{ rel: "stylesheet", href: mantineCss },
 			{
 				rel: "apple-touch-icon",
 				sizes: "180x180",
@@ -81,7 +85,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body>
-				<Providers>{children}</Providers>
+				<Providers>
+					<Shell>{children}</Shell>
+				</Providers>
 				<TanStackRouterDevtools position="bottom-right" />
 				<ReactQueryDevtools buttonPosition="bottom-left" />
 				<Scripts />
