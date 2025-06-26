@@ -1,2 +1,2 @@
 [start]
-cmd = 'node /app/server/index.mjs'
+cmd = 'node .output/server/index.mjs'
