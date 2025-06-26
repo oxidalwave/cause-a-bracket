@@ -1,56 +1,98 @@
-import { Box, Button, Card, Group, Stack, TextInput } from "@mantine/core";
+import {
+	Button,
+	Card,
+	Center,
+	Grid,
+	Group,
+	Stack,
+	TextInput,
+	TextInputProps,
+	Title,
+} from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { useState } from "react";
 import { z } from "zod";
+import EntrantCard from "~/components/entrant/EntrantCard";
 import valkey from "~/lib/db/valkey";
 
-const getBracket = createServerFn({ method: "GET", response: "data" })
+const getBracketData = createServerFn({ method: "GET", response: "data" })
 	.validator(z.object({ id: z.string() }))
-	.handler(async ({ data }) => await valkey.lrange(data.id, 0, -1));
+	.handler(async ({ data }) => await valkey.hgetall(`bracket-${data.id}`));
 
-const addToBracket = createServerFn({ method: "POST", response: "data" })
+const setBracketData = createServerFn({ method: "POST", response: "data" })
+	.validator(z.object({ id: z.string(), data: z.record(z.string()) }))
+	.handler(async ({ data }) =>
+		Object.entries(data.data).forEach(([key, value]) =>
+			valkey.hset(`bracket-${data.id}`, key, value),
+		),
+	);
+
+const getBracketEntrants = createServerFn({ method: "GET", response: "data" })
+	.validator(z.object({ id: z.string() }))
+	.handler(
+		async ({ data }) => await valkey.lrange(`entrants-${data.id}`, 0, -1),
+	);
+
+const addEntrantToBracket = createServerFn({ method: "POST", response: "data" })
 	.validator(z.object({ id: z.string(), item: z.string() }))
-	.handler(async ({ data }) => await valkey.rpush(data.id, data.item));
+	.handler(
+		async ({ data }) => await valkey.rpush(`entrants-${data.id}`, data.item),
+	);
 
 export const Route = createFileRoute("/brackets/$id")({
 	component: Home,
 	params: z.object({ id: z.string() }),
 	loader: async ({ params }) => ({
-		brackets: await getBracket({ data: params }),
+		data: await getBracketData({ data: params }),
+		brackets: await getBracketEntrants({ data: params }),
 	}),
 });
 
 function Home() {
-	const { brackets } = Route.useLoaderData();
+	const { brackets, data } = Route.useLoaderData();
 	const { id } = Route.useParams();
 	const navigate = Route.useNavigate();
 
+	const [category, setCategory] = useState(data.name ?? "");
+
+	const handleChangeCategory: TextInputProps["onChange"] = (e) => {
+		e.preventDefault();
+		setCategory(e.target.value);
+		setBracketData({ data: { id, data: { name: e.target.value } } });
+	};
+
 	return (
 		<Stack>
-			<Group>
-				<Card withBorder>
-					<Card.Section>
+			<TextInput value={category} onChange={handleChangeCategory} size="xl" />
+			<Center>
+				<Group>
+					<Card withBorder padding="md">
 						<form
 							action={async (formData) => {
-								await addToBracket({
+								await addEntrantToBracket({
 									data: { id, item: formData.get("item") as string },
 								});
 								navigate({ to: "/brackets/$id", params: { id } });
 							}}
 						>
 							<Stack>
+								<Title order={4}>Add an Entrant</Title>
 								<TextInput name="item" />
 								<Button type="submit">Submit</Button>
 							</Stack>
 						</form>
-					</Card.Section>
-				</Card>
-			</Group>
-			<Stack>
+					</Card>
+				</Group>
+			</Center>
+			<Title order={3}>Entrants</Title>
+			<Grid>
 				{brackets.map((b: string) => (
-					<Box key={b}>{b}</Box>
+					<Grid.Col key={b} span={2}>
+						<EntrantCard entrant={b} />
+					</Grid.Col>
 				))}
-			</Stack>
+			</Grid>
 		</Stack>
 	);
 }

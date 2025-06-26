@@ -1,13 +1,10 @@
 import { Box, type BoxProps } from "@mantine/core";
 import type { PropsWithChildren } from "react";
 
+import styles from "./Twist.module.css";
+
 type TwistProps = PropsWithChildren<BoxProps>;
 
 export default function Twist(props: TwistProps) {
-	return (
-		<Box
-			className="transition-transform duration-300 hover:rotate-[15deg] hover:scale-110"
-			{...props}
-		/>
-	);
+	return <Box className={styles.twist} {...props} />;
 }

@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 import { Card, Flex } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
+import Twist from "~/components/animation/Twist";
 import TsLink from "~/components/TsLink";
-import Twist from "~/components/Twist";
 
 export const Route = createFileRoute("/")({
 	component: Home,
