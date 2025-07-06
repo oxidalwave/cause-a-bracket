@@ -6,15 +6,15 @@ import {
 	Group,
 	Stack,
 	TextInput,
-	TextInputProps,
+	type TextInputProps,
 	Title,
 } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { z } from "zod";
-import EntrantCard from "~/components/entrant/EntrantCard";
-import valkey from "~/lib/db/valkey";
+import EntrantCard from "~lib/components/entrant/EntrantCard";
+import valkey from "~lib/db/valkey";
 
 const getBracketData = createServerFn({ method: "GET", response: "data" })
 	.validator(z.object({ id: z.string() }))
@@ -59,12 +59,21 @@ function Home() {
 	const handleChangeCategory: TextInputProps["onChange"] = (e) => {
 		e.preventDefault();
 		setCategory(e.target.value);
+	};
+
+	const handleBlurCategory: TextInputProps["onBlur"] = (e) => {
+		e.preventDefault();
 		setBracketData({ data: { id, data: { name: e.target.value } } });
 	};
 
 	return (
 		<Stack>
-			<TextInput value={category} onChange={handleChangeCategory} size="xl" />
+			<TextInput
+				value={category}
+				onChange={handleChangeCategory}
+				onBlur={handleBlurCategory}
+				size="xl"
+			/>
 			<Center>
 				<Group>
 					<Card withBorder padding="md">
@@ -93,6 +102,7 @@ function Home() {
 					</Grid.Col>
 				))}
 			</Grid>
+			<Button>Enter Bracket</Button>
 		</Stack>
 	);
 }

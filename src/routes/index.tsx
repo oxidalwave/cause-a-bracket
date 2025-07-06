@@ -1,8 +1,7 @@
-import { faker } from "@faker-js/faker";
 import { Card, Flex } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
-import Twist from "~/components/animation/Twist";
-import TsLink from "~/components/TsLink";
+import Twist from "~lib/components/animation/Twist";
+import TsLink from "~lib/components/TsLink";
 
 export const Route = createFileRoute("/")({
 	component: Home,
@@ -17,7 +16,7 @@ function Home() {
 						<TsLink.Button
 							to="/brackets/$id"
 							params={{
-								id: faker.string.uuid(),
+								id: "abcd",
 							}}
 							size="xl"
 						>

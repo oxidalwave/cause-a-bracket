@@ -1,7 +1,7 @@
-import { faker } from "@faker-js/faker";
-import { AppShell, type AppShellProps } from "@mantine/core";
+import { Affix, AppShell, type AppShellProps } from "@mantine/core";
 import { ListIcon } from "@phosphor-icons/react";
 import type { PropsWithChildren } from "react";
+import Chat from "../chat";
 import AccountAvatar from "../profile/AccountAvatar";
 import TsLink from "../TsLink";
 import Body from "./Body";
@@ -24,7 +24,7 @@ export default function Shell(props: ShellProps) {
 				<TsLink.Button
 					to="/brackets/$id"
 					params={{
-						id: faker.string.uuid(),
+						id: "abcd",
 					}}
 				>
 					Cause a Bracket!
@@ -32,6 +32,9 @@ export default function Shell(props: ShellProps) {
 			</Header>
 			<Body>{props.children}</Body>
 			<Footer />
+			<Affix position={{ bottom: 20, right: 20 }}>
+				<Chat />
+			</Affix>
 		</AppShell>
 	);
 }

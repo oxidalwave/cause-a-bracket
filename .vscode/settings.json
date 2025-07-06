@@ -10,5 +10,6 @@
   },
   "debug.javascript.defaultRuntimeExecutable": {
     "pwa-node": "/Users/jordanrust/.local/share/mise/shims/node"
-  }
+  },
+  "deno.path": "/Users/jordanrust/.local/share/mise/shims/deno"
 }

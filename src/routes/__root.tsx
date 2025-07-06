@@ -10,13 +10,12 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
-import Shell from "~/components/layout/Shell";
-import { NotFound } from "~/components/NotFound";
-import Providers from "~/components/util/Providers";
-import appCss from "~/styles/app.css?url";
-
-import { seo } from "~/utils/seo";
+import appCss from "~app/styles/app.css?url";
+import { DefaultCatchBoundary } from "~lib/components/DefaultCatchBoundary";
+import Shell from "~lib/components/layout/Shell";
+import { NotFound } from "~lib/components/NotFound";
+import Providers from "~lib/components/util/Providers";
+import { seo } from "~lib/utils/seo";
 
 export const Route = createRootRouteWithContext<{
 	queryClient: QueryClient;
