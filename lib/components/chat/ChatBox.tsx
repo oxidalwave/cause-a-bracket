@@ -1,24 +1,25 @@
-import { ActionIcon, Group, TextInput } from "@mantine/core";
+import { ActionIcon, TextInput } from "@mantine/core";
 import { PaperPlaneIcon } from "@phosphor-icons/react";
-import { useWs } from "../util/Providers/WsProvider";
 
-type ChatBoxProps = {};
+type ChatBoxProps = {
+	disabled?: boolean;
+	action: (formData: FormData) => Promise<void>;
+};
 
-export default function ChatBox(_props: ChatBoxProps) {
-	const ws = useWs();
-
-	const action = async (formData: FormData) => {
-		ws?.send(formData.get("message") ?? "");
-	};
-
+export default function ChatForm({ action, disabled }: ChatBoxProps) {
 	return (
-		<Group>
-			<form action={action}>
-				<TextInput name="message" />
-				<ActionIcon>
-					<PaperPlaneIcon />
-				</ActionIcon>
-			</form>
-		</Group>
+		<form action={action}>
+			<TextInput
+				disabled={disabled}
+				style={{ flexGrow: 1 }}
+				size="sm"
+				name="message"
+				rightSection={
+					<ActionIcon type="submit" size="input-sm" variant="subtle">
+						<PaperPlaneIcon />
+					</ActionIcon>
+				}
+			/>
+		</form>
 	);
 }

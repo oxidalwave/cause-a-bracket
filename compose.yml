@@ -1,4 +1,15 @@
 services:
+  nginx:
+    container_name: cause-a-bracket-nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - web
+      - ws
+    restart: unless-stopped
   valkey:
     container_name: cause-a-bracket-valkey
     image: valkey/valkey:8.1
@@ -10,3 +21,15 @@ services:
       timeout: 10s
       retries: 3
     restart: unless-stopped
+  web:
+    container_name: cause-a-bracket-web
+    build:
+      context: .
+      dockerfile: ./web/Dockerfile
+    depends_on:
+      - valkey
+  ws:
+    container_name: cause-a-bracket-ws
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile

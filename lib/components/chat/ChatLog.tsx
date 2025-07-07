@@ -1,16 +1,18 @@
-import { useEffect } from "react";
-import { useWs } from "../util/Providers/WsProvider";
+import { Stack } from "@mantine/core";
+import type { Message } from "~lib/validators/chat/Message";
+import ChatMessage from "./ChatMessage";
 
-type ChatLogProps = {};
+type ChatLogProps = {
+	messages: Message[];
+	user: string;
+};
 
-export default function ChatLog(_props: ChatLogProps) {
-	const ws = useWs();
-
-	useEffect(() => {
-		ws?.addEventListener("message", (m) => {
-			console.log(m);
-		});
-	}, [ws]);
-
-	return <></>;
+export default function ChatLog({ messages }: ChatLogProps) {
+	return (
+		<Stack>
+			{messages.map((message) => (
+				<ChatMessage key={message.id} message={message} />
+			))}
+		</Stack>
+	);
 }
