@@ -10,6 +10,7 @@ export default function ChatForm({ action, disabled }: ChatBoxProps) {
 	return (
 		<form action={action}>
 			<TextInput
+				data-autofocus
 				disabled={disabled}
 				style={{ flexGrow: 1 }}
 				size="sm"

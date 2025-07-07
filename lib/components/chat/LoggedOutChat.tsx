@@ -17,6 +17,7 @@ export default function LoggedOutChat({
 		<>
 			<form action={action}>
 				<TextInput
+					data-autofocus
 					style={{ flexGrow: 1 }}
 					size="sm"
 					name="user"

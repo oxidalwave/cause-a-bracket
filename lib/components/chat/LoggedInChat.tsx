@@ -56,7 +56,7 @@ export default function LoggedInChat({ user }: LoggedInChat) {
 	}, [ws, handleReceiveMessage]);
 
 	return (
-		<Stack>
+		<Stack justify="space-between" style={{ height: "calc(100dvh - 5rem)" }}>
 			<ChatLog messages={messages} user={user} />
 			<ChatForm action={handleSendMessage} disabled={ws === null} />
 		</Stack>
