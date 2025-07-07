@@ -1,5 +1,6 @@
+import dayjs from "dayjs";
 import { WebSocketServer } from "ws";
-import { Message } from "~lib/validators/chat/Message";
+import { CabServerEvent } from "~lib/validators/events";
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -7,19 +8,25 @@ wss.on("connection", function connection(ws) {
 	ws.on("error", console.error);
 
 	ws.on("message", function message(data) {
-		const message = Message.omit({ id: true, timestamp: true }).parse(
-			JSON.parse(String(data)),
-		);
-		wss.clients.forEach((c) => {
-			if (c !== ws && c.readyState === WebSocket.OPEN) {
-				c.send(
-					JSON.stringify({
-						...message,
+		const str = JSON.parse(String(data));
+		const message = CabServerEvent.parse(str);
+		switch (message.kind) {
+			case "message": {
+				const outgoingMessage = {
+					...message,
+					meta: {
 						id: crypto.randomUUID(),
-						timestamp: new Date(),
-					}),
-				);
+						timestamp: dayjs().unix(),
+					},
+				};
+				wss.clients.forEach((c) => {
+					if (c !== ws && c.readyState === WebSocket.OPEN) {
+						c.send(JSON.stringify(outgoingMessage));
+					}
+				});
+				break;
 			}
-		});
+			default:
+		}
 	});
 });

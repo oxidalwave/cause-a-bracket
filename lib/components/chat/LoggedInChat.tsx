@@ -1,7 +1,9 @@
 import { Stack } from "@mantine/core";
+import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { uniqWith } from "~lib/utils/collections/uniqWith";
-import { Message } from "~lib/validators/chat/Message";
+import type { CabChatServerEvent } from "~lib/validators/chat/Message";
+import { CabServerEvent } from "~lib/validators/events";
 import { useWs } from "../util/Providers/WsProvider";
 import ChatForm from "./ChatBox";
 import ChatLog from "./ChatLog";
@@ -11,35 +13,40 @@ type LoggedInChat = {
 };
 
 export default function LoggedInChat({ user }: LoggedInChat) {
-	const [messages, setMessages] = useState<Message[]>([]);
+	const [messages, setMessages] = useState<CabChatServerEvent[]>([]);
 	const ws = useWs();
 
 	const handleSendMessage = async (formData: FormData) => {
 		if (ws === null) {
 			return;
 		}
-		const message = Message.omit({ id: true, timestamp: true }).parse({
-			author: user,
-			message: formData.get("message") ?? "",
-		});
-		setMessages((messages) =>
-			uniqWith(
-				[
-					...messages,
-					{ ...message, id: crypto.randomUUID(), timestamp: new Date() },
-				],
-				(a, b) => a.id === b.id,
-			),
+		// TODO: Use optimistic updates
+		const message = {
+			kind: "message" as const,
+			data: {
+				author: user,
+				message: String(formData.get("message")) ?? "",
+			},
+			meta: {
+				id: crypto.randomUUID(),
+				timestamp: dayjs().unix(),
+			},
+		};
+		setMessages((ms) =>
+			uniqWith([...ms, message], (a, b) => a.meta.id === b.meta.id),
 		);
 		ws.send(JSON.stringify(message));
 	};
 
-	const handleReceiveMessage = useCallback((m: MessageEvent) => {
-		const message = Message.parse(JSON.parse(m.data));
-		setMessages((messages) =>
-			uniqWith([...messages, message], (a, b) => a.id === b.id),
-		);
-	}, []);
+	const handleReceiveMessage = useCallback(
+		(e: WebSocketEventMap["message"]) => {
+			const message = CabServerEvent.parse(JSON.parse(e.data));
+			setMessages((messages) =>
+				uniqWith([...messages, message], (a, b) => a.meta.id === b.meta.id),
+			);
+		},
+		[],
+	);
 
 	useEffect(() => {
 		ws?.addEventListener("message", handleReceiveMessage);
@@ -49,11 +56,9 @@ export default function LoggedInChat({ user }: LoggedInChat) {
 	}, [ws, handleReceiveMessage]);
 
 	return (
-		<>
-			<Stack>
-				<ChatLog messages={messages} user={user} />
-				<ChatForm action={handleSendMessage} disabled={ws === null} />
-			</Stack>
-		</>
+		<Stack>
+			<ChatLog messages={messages} user={user} />
+			<ChatForm action={handleSendMessage} disabled={ws === null} />
+		</Stack>
 	);
 }

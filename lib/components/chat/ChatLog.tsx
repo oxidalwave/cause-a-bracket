@@ -1,9 +1,9 @@
 import { Stack } from "@mantine/core";
-import type { Message } from "~lib/validators/chat/Message";
+import type { CabChatServerEvent } from "~lib/validators/chat/Message";
 import ChatMessage from "./ChatMessage";
 
 type ChatLogProps = {
-	messages: Message[];
+	messages: CabChatServerEvent[];
 	user: string;
 };
 
@@ -11,7 +11,7 @@ export default function ChatLog({ messages }: ChatLogProps) {
 	return (
 		<Stack>
 			{messages.map((message) => (
-				<ChatMessage key={message.id} message={message} />
+				<ChatMessage key={message.meta.id} message={message} />
 			))}
 		</Stack>
 	);

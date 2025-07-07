@@ -1,19 +1,19 @@
 import { Card, Group, Text } from "@mantine/core";
 import dayjs from "dayjs";
-import type { Message } from "~lib/validators/chat/Message";
+import type { CabChatServerEvent } from "~lib/validators/chat/Message";
 
 type ChatMessageProps = {
-	message: Message;
+	message: CabChatServerEvent;
 };
 
 export default function ChatMessage({ message }: ChatMessageProps) {
 	return (
 		<Card withBorder>
 			<Group justify="space-between">
-				<Text fw={650}>{message.author}</Text>
-				<Text c="dimmed">{dayjs(message.timestamp).format("HH:mmA")}</Text>
+				<Text fw={650}>{message.data.author}</Text>
+				<Text c="dimmed">{dayjs(message.meta.timestamp).format("HH:mmA")}</Text>
 			</Group>
-			<Text>{message.message}</Text>
+			<Text>{message.data.message}</Text>
 		</Card>
 	);
 }
