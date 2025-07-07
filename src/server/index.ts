@@ -1,13 +1,13 @@
 import dayjs from "dayjs";
+import { CabServerEvent } from "src/lib/validators/events";
 import { WebSocketServer } from "ws";
-import { CabServerEvent } from "~lib/validators/events";
 
 const wss = new WebSocketServer({ port: 8080 });
 
-wss.on("connection", function connection(ws) {
+wss.on("connection", (ws) => {
 	ws.on("error", console.error);
 
-	ws.on("message", function message(data) {
+	ws.on("message", (data) => {
 		const str = JSON.parse(String(data));
 		const message = CabServerEvent.parse(str);
 		switch (message.kind) {
@@ -27,6 +27,8 @@ wss.on("connection", function connection(ws) {
 				break;
 			}
 			default:
+				console.warn("Unknown message kind:", message.kind, message);
+				break;
 		}
 	});
 });

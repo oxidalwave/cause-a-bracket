@@ -1,5 +1,5 @@
 import { ScrollArea, Stack } from "@mantine/core";
-import type { CabChatServerEvent } from "~lib/validators/chat/Message";
+import type { CabChatServerEvent } from "src/lib/validators/chat/Message";
 import ChatMessage from "./ChatMessage";
 
 type ChatLogProps = {

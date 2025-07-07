@@ -1,6 +1,6 @@
 import { Card, Group, Text } from "@mantine/core";
 import dayjs from "dayjs";
-import type { CabChatServerEvent } from "~lib/validators/chat/Message";
+import type { CabChatServerEvent } from "src/lib/validators/chat/Message";
 
 type ChatMessageProps = {
 	message: CabChatServerEvent;

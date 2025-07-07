@@ -28,7 +28,8 @@
             "runtimeArgs": [
                 "run",
                 "dev:ws"
-            ]
+            ],
+            "envFile": "${workspaceFolder}/.ws.env"
         },
         {
             "type": "node",

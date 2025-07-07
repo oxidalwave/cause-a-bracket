@@ -1,5 +1,5 @@
 import { Card, type CardProps } from "@mantine/core";
-import type { Entrant } from "~lib/validators/entrant";
+import type { Entrant } from "src/lib/validators/entrant";
 
 type EntrantCardProps = Omit<CardProps, "children"> & {
 	entrant: Entrant;

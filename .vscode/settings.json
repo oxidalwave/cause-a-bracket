@@ -9,6 +9,6 @@
     "**/routeTree.gen.ts": true
   },
   "debug.javascript.defaultRuntimeExecutable": {
-    "pwa-node": "/Users/jordanrust/.local/share/mise/shims/node"
+    "pwa-node": "~/.local/share/mise/shims/node"
   }
 }

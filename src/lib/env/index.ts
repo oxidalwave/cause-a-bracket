@@ -4,6 +4,6 @@ const EnvironmentValidator = z.object({
 	VITE_VALKEY_CONNECTION_STRING: z.string().url(),
 });
 
-const env = EnvironmentValidator.parse(import.meta.env);
+const env = EnvironmentValidator.parse(process.env);
 
 export default env;

@@ -23,13 +23,13 @@
     "baseUrl": ".",
     "paths": {
       "~web/*": [
-        "web/*"
+        "src/web/*"
       ],
       "~lib/*": [
-        "./lib/*"
+        "src/lib/*"
       ],
       "~server/*": [
-        "server/*"
+        "src/server/*"
       ],
     },
     "noEmit": true

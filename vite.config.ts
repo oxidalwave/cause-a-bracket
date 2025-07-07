@@ -12,6 +12,9 @@ export default defineConfig({
 		tsConfigPaths({
 			projects: ["./tsconfig.json"],
 		}),
-		tanstackStart({ target: "node-server", tsr: { srcDirectory: "./web" } }),
+		tanstackStart({
+			target: "node-server",
+			tsr: { srcDirectory: "./src/web" },
+		}),
 	],
 });

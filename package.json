@@ -9,9 +9,8 @@
     "prestart:web": "pnpm run build:web",
     "start:web": "vite start",
     "preview:web": "node .output/server/index.mjs",
-    "dev:ws": "tsx ./server/index.ts --watch",
-    "build:ws": "swc ./server -d ./.dist/server --strip-leading-paths",
-    "start:ws": "node ./.dist/server/index.js"
+    "dev:ws": "tsx ./src/server/index.ts --watch",
+    "start:ws": "tsx ./src/server/index.ts"
   },
   "dependencies": {
     "@faker-js/faker": "^9.8.0",

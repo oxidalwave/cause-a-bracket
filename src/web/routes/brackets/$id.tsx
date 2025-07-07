@@ -12,9 +12,9 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useState } from "react";
+import EntrantCard from "src/lib/components/entrant/EntrantCard";
+import valkey from "src/lib/valkey";
 import { z } from "zod";
-import EntrantCard from "~lib/components/entrant/EntrantCard";
-import valkey from "~lib/db/valkey";
 
 const getBracketData = createServerFn({ method: "GET", response: "data" })
 	.validator(z.object({ id: z.string() }))

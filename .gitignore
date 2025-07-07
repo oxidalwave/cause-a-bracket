@@ -20,4 +20,4 @@ yarn.lock
 .nitro
 .tanstack
 
-dist
+.dist
