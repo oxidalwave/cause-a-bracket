@@ -2,13 +2,13 @@ import { Card, type CardProps } from "@mantine/core";
 import type { Entrant } from "src/lib/validators/entrant";
 
 type EntrantCardProps = Omit<CardProps, "children"> & {
-	entrant: Entrant;
+  entrant: Entrant;
 };
 
 export default function EntrantCard({ entrant, ...props }: EntrantCardProps) {
-	return (
-		<Card withBorder padding="md" {...props}>
-			{entrant}
-		</Card>
-	);
+  return (
+    <Card withBorder padding="md" {...props}>
+      {entrant}
+    </Card>
+  );
 }

@@ -3,19 +3,11 @@
     "tasks": [
         {
             "type": "npm",
-            "script": "build:web",
+            "script": "build",
             "group": "build",
             "problemMatcher": [],
-            "label": "pnpm: build:web",
-            "detail": "vite build && tsc --noEmit"
-        },
-        {
-            "type": "npm",
-            "script": "build:ws",
-            "group": "build",
-            "problemMatcher": [],
-            "label": "pnpm: build:ws",
-            "detail": "swc ./server -d ./.dist/server --strip-leading-paths"
+            "label": "pnpm: build",
+            "detail": "pnpm run build"
         }
     ]
 }

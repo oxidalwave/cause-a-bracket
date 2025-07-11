@@ -1,3 +1,4 @@
 [tools]
-biome = "latest"
-pnpm = "latest"
+biome = "2.0"
+pnpm = "10.12"
+node = "24"

@@ -4,5 +4,5 @@ import type { PropsWithChildren } from "react";
 type BodyProps = PropsWithChildren<FlexProps>;
 
 export default function Body({ children }: BodyProps) {
-	return <AppShellMain h="100dvh">{children}</AppShellMain>;
+  return <AppShellMain h="100dvh">{children}</AppShellMain>;
 }

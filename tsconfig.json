@@ -22,15 +22,9 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "~web/*": [
-        "src/web/*"
-      ],
-      "~lib/*": [
-        "src/lib/*"
-      ],
-      "~server/*": [
-        "src/server/*"
-      ],
+      "~/*": [
+        "src/*"
+      ]
     },
     "noEmit": true
   }

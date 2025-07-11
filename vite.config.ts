@@ -14,7 +14,6 @@ export default defineConfig({
 		}),
 		tanstackStart({
 			target: "node-server",
-			tsr: { srcDirectory: "./src/web" },
 		}),
 	],
 });

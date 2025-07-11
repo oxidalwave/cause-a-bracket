@@ -6,5 +6,5 @@ import styles from "./Twist.module.css";
 type TwistProps = PropsWithChildren<BoxProps>;
 
 export default function Twist(props: TwistProps) {
-	return <Box className={styles.twist} {...props} />;
+  return <Box className={styles.twist} {...props} />;
 }
