@@ -2,7 +2,6 @@ import { Affix, AppShell, type AppShellProps } from "@mantine/core";
 import { ListIcon } from "@phosphor-icons/react";
 import type { PropsWithChildren } from "react";
 import Chat from "../chat";
-import ServeredChat from "../chat/ServeredChat";
 import AccountAvatar from "../profile/AccountAvatar";
 import TsLink from "../TsLink";
 import Body from "./Body";
@@ -33,10 +32,7 @@ export default function Shell(props: ShellProps) {
       </Header>
       <Body>{props.children}</Body>
       <Footer />
-      <Affix position={{ bottom: 20, right: 80 }}>
-        <ServeredChat />
-      </Affix>
-      <Affix position={{ bottom: 20, right: 20 }}>
+      <Affix position={{ bottom: 40, right: 20 }}>
         <Chat />
       </Affix>
     </AppShell>
