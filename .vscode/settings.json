@@ -1,15 +1,16 @@
 {
-	"files.watcherExclude": {
-		"**/routeTree.gen.ts": true
-	},
 	"search.exclude": {
 		"**/routeTree.gen.ts": true
 	},
 	"files.readonlyInclude": {
 		"**/routeTree.gen.ts": true
 	},
-	"debug.javascript.defaultRuntimeExecutable": {
-		"pwa-node": "~/.local/share/mise/shims/node"
+	"files.watcherExclude": {
+		"**/routeTree.gen.ts": true
 	},
-	"typescript.tsdk": "node_modules/typescript/lib"
+	"debug.javascript.defaultRuntimeExecutable": {
+		"pwa-node": "/Users/jordanrust/.local/share/mise/shims/node"
+	},
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.experimental.useTsgo": false
 }

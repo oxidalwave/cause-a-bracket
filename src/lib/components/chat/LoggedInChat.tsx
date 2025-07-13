@@ -29,7 +29,7 @@ export default function LoggedInChat({ user }: LoggedInChat) {
       },
       meta: {
         id: crypto.randomUUID(),
-        timestamp: dayjs().unix(),
+        timestamp: dayjs().toISOString(),
       },
     };
     setMessages((ms) =>

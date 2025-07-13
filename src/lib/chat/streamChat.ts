@@ -8,8 +8,10 @@ import { sendMessage } from "../streams/message";
 export const ChatStreamMessage = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("system"),
-    id: z.uuid(),
-    timestamp: z.iso.datetime(),
+    meta: z.object({
+      id: z.uuid(),
+      timestamp: z.iso.datetime(),
+    }),
     data: z.discriminatedUnion("event", [
       z.object({
         event: z.enum(["connected", "disconnected"]),
@@ -22,8 +24,10 @@ export const ChatStreamMessage = z.discriminatedUnion("kind", [
   }),
   z.object({
     kind: z.literal("message"),
-    id: z.uuid(),
-    timestamp: z.iso.datetime(),
+    meta: z.object({
+      id: z.uuid(),
+      timestamp: z.iso.datetime(),
+    }),
     data: z.object({
       message: z.string(),
       author: z.string(),
@@ -44,8 +48,10 @@ export const streamChat = createServerFn({ response: "raw" }).handler(
             console.error("Failed to subscribe: %s", err.message);
             sendChatMessage(controller, {
               kind: "system",
-              id: crypto.randomUUID(),
-              timestamp: dayjs().toISOString(),
+              meta: {
+                id: crypto.randomUUID(),
+                timestamp: dayjs().toISOString(),
+              },
               data: {
                 event: "error",
                 message: err.message,
@@ -55,8 +61,10 @@ export const streamChat = createServerFn({ response: "raw" }).handler(
           } else {
             sendChatMessage(controller, {
               kind: "system",
-              id: crypto.randomUUID(),
-              timestamp: dayjs().toISOString(),
+              meta: {
+                id: crypto.randomUUID(),
+                timestamp: dayjs().toISOString(),
+              },
               data: {
                 event: "connected",
               },
@@ -71,8 +79,10 @@ export const streamChat = createServerFn({ response: "raw" }).handler(
             console.error("Invalid message received:", validated.error);
             sendChatMessage(controller, {
               kind: "system",
-              id: crypto.randomUUID(),
-              timestamp: dayjs().toISOString(),
+              meta: {
+                id: crypto.randomUUID(),
+                timestamp: dayjs().toISOString(),
+              },
               data: {
                 event: "error",
                 message: `Invalid message format: ${validated.error.message}`,
@@ -86,12 +96,7 @@ export const streamChat = createServerFn({ response: "raw" }).handler(
                 case "system":
                   break;
                 case "message":
-                  sendChatMessage(controller, {
-                    kind: "message",
-                    id: crypto.randomUUID(),
-                    timestamp: dayjs().toISOString(),
-                    data: validated.data.data,
-                  });
+                  sendChatMessage(controller, validated.data);
                   break;
                 default:
                   console.warn("Unknown message kind:", validated.data);
@@ -109,8 +114,10 @@ export const streamChat = createServerFn({ response: "raw" }).handler(
             } else {
               sendChatMessage(controller, {
                 kind: "system",
-                id: crypto.randomUUID(),
-                timestamp: dayjs().toISOString(),
+                meta: {
+                  id: crypto.randomUUID(),
+                  timestamp: dayjs().toISOString(),
+                },
                 data: {
                   event: "disconnected",
                 },

@@ -13,7 +13,7 @@ export default function ChatLog({ messages }: ChatLogProps) {
     <ScrollArea.Autosize>
       <Stack>
         {messages.map((message) => (
-          <ChatMessage key={message.id} message={message} />
+          <ChatMessage key={message.meta.id} message={message} />
         ))}
       </Stack>
     </ScrollArea.Autosize>

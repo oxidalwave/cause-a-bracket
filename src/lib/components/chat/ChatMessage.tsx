@@ -11,7 +11,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
     <Card withBorder>
       <Group justify="space-between">
         <Text fw={650}>{message.data.author}</Text>
-        <Text c="dimmed">{message.timestamp}</Text>
+        <Text c="dimmed">{message.meta.timestamp}</Text>
       </Group>
       <Text>{message.data.message}</Text>
     </Card>

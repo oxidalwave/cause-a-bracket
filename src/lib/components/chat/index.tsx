@@ -1,14 +1,6 @@
-import {
-  ActionIcon,
-  Badge,
-  Button,
-  Drawer,
-  Indicator,
-  Stack,
-} from "@mantine/core";
-import { useDisclosure, useToggle } from "@mantine/hooks";
+import { ActionIcon, Drawer, Indicator, Stack } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { ChatIcon } from "@phosphor-icons/react";
-import dayjs from "dayjs";
 import { z } from "zod/v4";
 import { sendMessage } from "~/lib/chat/sendMessage";
 import { ChatStreamMessage, streamChat } from "~/lib/chat/streamChat";
@@ -26,7 +18,9 @@ export default function Chat() {
     queryFn: streamChat,
     schema: ChatStreamMessage,
     onChunk: () => {
-      setNotUpToDate();
+      if (!opened) {
+        setNotUpToDate();
+      }
     },
   });
 
@@ -48,7 +42,7 @@ export default function Chat() {
             {data
               .filter((d) => d.kind === "message")
               .map((d) => (
-                <ChatMessage key={d.id} message={d} />
+                <ChatMessage key={d.meta.id} message={d} />
               ))}
           </Stack>
           <ChatForm
@@ -57,7 +51,6 @@ export default function Chat() {
                 data: {
                   message: z.string().parse(formData.get("message")),
                   author: "User",
-                  timestamp: dayjs().toISOString(),
                 },
               });
             }}
