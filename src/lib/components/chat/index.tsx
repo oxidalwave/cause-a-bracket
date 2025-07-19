@@ -1,17 +1,20 @@
 import { ActionIcon, Drawer, Indicator, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ChatIcon } from "@phosphor-icons/react";
+import { useState } from "react";
 import { z } from "zod/v4";
-import { sendMessage } from "~/lib/chat/sendMessage";
-import { ChatStreamMessage, streamChat } from "~/lib/chat/streamChat";
 import useStream from "~/lib/hooks/useStream";
+import { sendMessage } from "~/lib/server/functions/chat/sendMessage";
+import {
+  ChatStreamMessage,
+  streamChat,
+} from "~/lib/server/functions/chat/streamChat";
 import ChatForm from "./ChatBox";
 import ChatMessage from "./ChatMessage";
 
 export default function Chat() {
   const [opened, { open, close }] = useDisclosure();
-  const [upToDate, { open: setUpToDate, close: setNotUpToDate }] =
-    useDisclosure();
+  const [read, setRead] = useState(true);
 
   const data = useStream({
     queryKey: ["chat"],
@@ -19,19 +22,19 @@ export default function Chat() {
     schema: ChatStreamMessage,
     onChunk: () => {
       if (!opened) {
-        setNotUpToDate();
+        setRead(false);
       }
     },
   });
 
   function handleOpen() {
     open();
-    setUpToDate();
+    setRead(true);
   }
 
   return (
     <>
-      <Indicator disabled={upToDate} color="red">
+      <Indicator disabled={read} color="red">
         <ActionIcon onClick={handleOpen}>
           <ChatIcon />
         </ActionIcon>

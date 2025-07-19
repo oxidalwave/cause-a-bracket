@@ -12,8 +12,8 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import EntrantCard from "src/lib/components/entrant/EntrantCard";
-import valkey from "src/lib/valkey";
+import EntrantCard from "~/lib/components/entrant/EntrantCard";
+import valkey from "~/lib/valkey";
 import { z } from "zod";
 
 const getBracketData = createServerFn({ method: "GET", response: "data" })
@@ -21,7 +21,9 @@ const getBracketData = createServerFn({ method: "GET", response: "data" })
   .handler(async ({ data }) => await valkey.hgetall(`bracket-${data.id}`));
 
 const setBracketData = createServerFn({ method: "POST", response: "data" })
-  .validator(z.object({ id: z.string(), data: z.record(z.string()) }))
+  .validator(
+    z.object({ id: z.string(), data: z.record(z.string(), z.string()) }),
+  )
   .handler(async ({ data }) =>
     Object.entries(data.data).forEach(([key, value]) =>
       valkey.hset(`bracket-${data.id}`, key, value),

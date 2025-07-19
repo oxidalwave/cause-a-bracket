@@ -1,9 +1,9 @@
 import { Stack } from "@mantine/core";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
-import { uniqWith } from "src/lib/utils/collections/uniqWith";
-import type { CabChatServerEvent } from "src/lib/validators/chat/Message";
-import { CabServerEvent } from "src/lib/validators/events";
+import { uniqWith } from "~/lib/utils/collections/uniqWith";
+import type { CabChatServerEvent } from "~/lib/validators/chat/Message";
+import { CabServerEvent } from "~/lib/validators/events";
 import { useWs } from "../util/Providers/WsProvider";
 import ChatForm from "./ChatBox";
 import ChatLog from "./ChatLog";

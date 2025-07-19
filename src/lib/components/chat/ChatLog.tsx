@@ -1,6 +1,6 @@
 import { ScrollArea, Stack } from "@mantine/core";
 import type { z } from "zod/v4";
-import type { ChatStreamMessage } from "~/lib/chat/streamChat";
+import type { ChatStreamMessage } from "~/lib/server/functions/chat/streamChat";
 import ChatMessage from "./ChatMessage";
 
 type ChatLogProps = {

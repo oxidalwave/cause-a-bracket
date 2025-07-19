@@ -1,7 +1,15 @@
 {
   "include": [
-    "**/*.ts",
-    "**/*.tsx"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "app.config.ts",
+    "vite.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".output",
+    ".output",
+    ".tanstack"
   ],
   "compilerOptions": {
     "strict": true,
@@ -21,7 +29,6 @@
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "*": ["./*"],
       "~/*": [
         "./src/*"
       ]

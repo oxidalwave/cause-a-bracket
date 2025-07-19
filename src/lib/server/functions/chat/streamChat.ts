@@ -2,8 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import dayjs from "dayjs";
 import Valkey from "iovalkey";
 import { z } from "zod/v4";
-import env from "../env";
-import { sendMessage } from "../streams/message";
+import env from "~/lib/env";
+import { loggerMiddleware } from "~/lib/server/middleware/logger";
+import { sendMessage } from "~/lib/streams/message";
 
 export const ChatStreamMessage = z.discriminatedUnion("kind", [
   z.object({
@@ -37,8 +38,9 @@ export const ChatStreamMessage = z.discriminatedUnion("kind", [
 
 const sendChatMessage = sendMessage<z.infer<typeof ChatStreamMessage>>;
 
-export const streamChat = createServerFn({ response: "raw" }).handler(
-  ({ signal }) => {
+export const streamChat = createServerFn({ response: "raw" })
+  .middleware([loggerMiddleware])
+  .handler(({ signal }) => {
     const stream = new ReadableStream({
       async start(controller) {
         const valkey = new Valkey(env.VITE_VALKEY_CONNECTION_STRING);
@@ -59,6 +61,7 @@ export const streamChat = createServerFn({ response: "raw" }).handler(
             });
             controller.close();
           } else {
+            console.log("Subscribed to chat channel");
             sendChatMessage(controller, {
               kind: "system",
               meta: {
@@ -137,5 +140,4 @@ export const streamChat = createServerFn({ response: "raw" }).handler(
         Connection: "keep-alive",
       },
     });
-  },
-);
+  });

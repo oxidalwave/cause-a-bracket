@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { CabServerEventMeta } from "../events/meta";
+import { Meta } from "~/lib/validators/util/meta";
 
 export const CabChat = z.object({
   author: z.string(),
@@ -18,7 +18,7 @@ export type CabChatClientMessage = z.infer<typeof CabChatClientMessage>;
 export const CabChatServerEvent = z.object({
   kind: z.literal("message"),
   data: CabChat,
-  meta: CabServerEventMeta,
+  meta: Meta,
 });
 
 export type CabChatServerEvent = z.infer<typeof CabChatServerEvent>;
