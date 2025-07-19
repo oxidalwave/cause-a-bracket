@@ -2,7 +2,6 @@ import { z } from "zod/v4";
 import { Meta } from "~/lib/validators/util/meta";
 
 export const CabChat = z.object({
-  author: z.string(),
   message: z.string(),
 });
 

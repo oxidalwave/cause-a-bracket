@@ -28,10 +28,10 @@ export const ChatStreamMessage = z.discriminatedUnion("kind", [
     meta: z.object({
       id: z.uuid(),
       timestamp: z.iso.datetime(),
+      author: z.string(),
     }),
     data: z.object({
       message: z.string(),
-      author: z.string(),
     }),
   }),
 ]);

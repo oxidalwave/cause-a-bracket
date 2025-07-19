@@ -53,7 +53,6 @@ export default function Chat() {
               await sendMessage({
                 data: {
                   message: z.string().parse(formData.get("message")),
-                  author: "User",
                 },
               });
             }}

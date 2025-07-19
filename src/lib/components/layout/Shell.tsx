@@ -1,6 +1,7 @@
 import { Affix, AppShell, type AppShellProps } from "@mantine/core";
 import { ListIcon } from "@phosphor-icons/react";
 import type { PropsWithChildren } from "react";
+import authClient from "~/lib/auth-client";
 import Chat from "~/lib/components/chat";
 import AccountAvatar from "../profile/AccountAvatar";
 import TsLink from "../TsLink";
@@ -11,6 +12,8 @@ import Header from "./Header";
 type ShellProps = PropsWithChildren<AppShellProps>;
 
 export default function Shell(props: ShellProps) {
+  const { data: session } = authClient.useSession();
+
   return (
     <AppShell header={{ height: 60 }} footer={{ height: 60 }} padding="md">
       <Header
@@ -32,9 +35,11 @@ export default function Shell(props: ShellProps) {
       </Header>
       <Body>{props.children}</Body>
       <Footer />
-      <Affix position={{ bottom: 40, right: 20 }}>
-        <Chat />
-      </Affix>
+      {session && (
+        <Affix position={{ bottom: 40, right: 20 }}>
+          <Chat />
+        </Affix>
+      )}
     </AppShell>
   );
 }

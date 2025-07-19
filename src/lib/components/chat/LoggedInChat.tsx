@@ -24,10 +24,10 @@ export default function LoggedInChat({ user }: LoggedInChat) {
     const message = {
       kind: "message" as const,
       data: {
-        author: user,
         message: String(formData.get("message")) ?? "",
       },
       meta: {
+        author: user,
         id: crypto.randomUUID(),
         timestamp: dayjs().toISOString(),
       },

@@ -5,22 +5,22 @@ services:
     ports:
       - "6379:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 30s
       timeout: 10s
       retries: 3
     restart: unless-stopped
     volumes:
       - valkey_data:/data
-  db:
-    container_name: cause-a-bracket-db
+  auth-db:
+    container_name: cause-a-bracket-auth-db
     image: postgres:latest
     env_file:
-      - ./db.env
+      - ./auth-db.env
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - auth_db_data:/var/lib/postgresql/data
     restart: unless-stopped
   app:
     container_name: cause-a-bracket-app
@@ -28,15 +28,15 @@ services:
       context: .
       dockerfile: ./Dockerfile
     depends_on:
-      - db
+      - auth-db
       - valkey
     healthcheck:
-      test: ["CMD", "ping", "-c", "1", "localhost"]
+      test: [ "CMD", "ping", "-c", "1", "localhost" ]
       interval: 30s
       timeout: 10s
       retries: 5
 volumes:
-  db_data:
+  auth_db_data:
     driver: local
   valkey_data:
     driver: local

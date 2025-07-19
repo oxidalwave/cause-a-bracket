@@ -3,6 +3,7 @@ import z from "zod";
 export const Meta = z.object({
   id: z.uuid(),
   timestamp: z.string(),
+  author: z.string(),
 });
 
 export type Meta = z.infer<typeof Meta>;
