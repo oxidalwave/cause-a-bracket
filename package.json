@@ -37,6 +37,7 @@
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "iovalkey": "^0.3.3",
+    "nanoid": "^5.1.5",
     "pg": "^8.16.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

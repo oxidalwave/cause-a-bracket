@@ -1,5 +1,6 @@
 import { Stack } from "@mantine/core";
 import dayjs from "dayjs";
+import { nanoid } from "nanoid";
 import { useCallback, useEffect, useState } from "react";
 import { uniqWith } from "~/lib/utils/collections/uniqWith";
 import type { CabChatServerEvent } from "~/lib/validators/chat/Message";
@@ -28,7 +29,7 @@ export default function LoggedInChat({ user }: LoggedInChat) {
       },
       meta: {
         author: user,
-        id: crypto.randomUUID(),
+        id: nanoid(),
         timestamp: dayjs().toISOString(),
       },
     };

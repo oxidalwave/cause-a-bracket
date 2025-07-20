@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import dayjs from "dayjs";
 import Valkey from "iovalkey";
+import { nanoid } from "nanoid";
 import { z } from "zod/v4";
 import env from "~/lib/env";
 import { loggerMiddleware } from "~/lib/server/middleware/logger";
@@ -51,7 +52,7 @@ export const streamChat = createServerFn({ response: "raw" })
             sendChatMessage(controller, {
               kind: "system",
               meta: {
-                id: crypto.randomUUID(),
+                id: nanoid(),
                 timestamp: dayjs().toISOString(),
               },
               data: {
@@ -65,7 +66,7 @@ export const streamChat = createServerFn({ response: "raw" })
             sendChatMessage(controller, {
               kind: "system",
               meta: {
-                id: crypto.randomUUID(),
+                id: nanoid(),
                 timestamp: dayjs().toISOString(),
               },
               data: {
@@ -83,7 +84,7 @@ export const streamChat = createServerFn({ response: "raw" })
             sendChatMessage(controller, {
               kind: "system",
               meta: {
-                id: crypto.randomUUID(),
+                id: nanoid(),
                 timestamp: dayjs().toISOString(),
               },
               data: {
@@ -118,7 +119,7 @@ export const streamChat = createServerFn({ response: "raw" })
               sendChatMessage(controller, {
                 kind: "system",
                 meta: {
-                  id: crypto.randomUUID(),
+                  id: nanoid(),
                   timestamp: dayjs().toISOString(),
                 },
                 data: {
