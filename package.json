@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && tsc --noEmit",
-    "start": "vite start",
-    "prepreview": "pnpm run build",
-    "preview": "node .output/server/index.mjs",
+    "start": "node .output/server/index.mjs",
     "format": "prettier . --write",
     "lint": "eslint"
   },
