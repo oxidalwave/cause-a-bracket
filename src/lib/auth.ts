@@ -13,11 +13,7 @@ const discord =
 
 export const auth = betterAuth({
   database: new Pool({
-    // connection options
-    host: process.env.BETTER_AUTH_POSTGRES_HOST,
-    user: process.env.BETTER_AUTH_POSTGRES_USER,
-    password: process.env.BETTER_AUTH_POSTGRES_PASSWORD,
-    database: process.env.BETTER_AUTH_POSTGRES_DB,
+    connectionString: process.env.BETTER_AUTH_POSTGRES_URL,
   }),
   socialProviders: {
     discord,
