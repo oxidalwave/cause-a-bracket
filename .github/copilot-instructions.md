@@ -13,6 +13,7 @@
 - [Better Auth](https://www.better-auth.com/llms.txt)
 - [iovalkey](https://github.com/valkey-io/iovalkey)
 - [Biome](https://biomejs.dev/)
+- [Coolify](https://coolify.io/docs/)
 
 ## Acceptance Criteria
 
