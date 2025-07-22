@@ -44,7 +44,7 @@ export const streamChat = createServerFn({ response: "raw" })
   .handler(({ signal }) => {
     const stream = new ReadableStream({
       async start(controller) {
-        const valkey = new Valkey(env.VITE_VALKEY_CONNECTION_STRING);
+        const valkey = new Valkey(env.VALKEY_CONNECTION_STRING);
 
         valkey.subscribe("chat", (err) => {
           if (err) {
