@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 import Valkey from "iovalkey";
 import { nanoid } from "nanoid";
 import { z } from "zod/v4";
-import env from "~/lib/env";
 import { loggerMiddleware } from "~/lib/server/middleware/logger";
 import { sendMessage } from "~/lib/streams/message";
 
@@ -44,7 +43,7 @@ export const streamChat = createServerFn({ response: "raw" })
   .handler(({ signal }) => {
     const stream = new ReadableStream({
       async start(controller) {
-        const valkey = new Valkey(env.VALKEY_CONNECTION_STRING);
+        const valkey = new Valkey(import.meta.env.VALKEY_CONNECTION_STRING);
 
         valkey.subscribe("chat", (err) => {
           if (err) {
