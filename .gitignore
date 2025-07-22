@@ -2,7 +2,9 @@ node_modules
 .DS_Store
 .cache
 *.env
-!*.example.env
+*.env.*
+.env.*
+!*.env.example
 .output
 .nitro
 .tanstack

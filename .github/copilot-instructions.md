@@ -22,3 +22,4 @@
 - The code must be tested and pass all tests.
 - The code must follow best practices for security and performance.
 - The code must build and run without errors.
+- The code must only include comments when the code is unclear.
