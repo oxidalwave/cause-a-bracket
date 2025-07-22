@@ -5,6 +5,9 @@
       <excludeFolder url="file://$MODULE_DIR$/.tmp" />
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/.nitro" />
+      <excludeFolder url="file://$MODULE_DIR$/.output" />
+      <excludeFolder url="file://$MODULE_DIR$/.tanstack" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
