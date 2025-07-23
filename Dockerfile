@@ -7,6 +7,20 @@ RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 FROM base AS development
+ARG VALKEY_CONNECTION_STRING
+ARG URL
+ARG BETTER_AUTH_SECRET
+ARG BETTER_AUTH_POSTGRES_URL
+ARG BETTER_AUTH_DISCORD_CLIENT_ID
+ARG BETTER_AUTH_DISCORD_CLIENT_SECRET
+
+RUN echo "VALKEY_CONNECTION_STRING=${VALKEY_CONNECTION_STRING}" >> .env && \
+    echo "URL=${URL}" >> .env && \
+    echo "BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}" >> .env && \
+    echo "BETTER_AUTH_POSTGRES_URL=${BETTER_AUTH_POSTGRES_URL}" >> .env && \
+    echo "BETTER_AUTH_DISCORD_CLIENT_ID=${BETTER_AUTH_DISCORD_CLIENT_ID}" >> .env && \
+    echo "BETTER_AUTH_DISCORD_CLIENT_SECRET=${BETTER_AUTH_DISCORD_CLIENT_SECRET}" >> .env
+
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
