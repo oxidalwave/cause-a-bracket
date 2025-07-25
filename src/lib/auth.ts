@@ -19,4 +19,5 @@ export const auth = betterAuth({
     discord,
   },
   plugins: [reactStartCookies()],
+  trustedOrigins: process.env.BETTER_AUTH_TRUSTED_ORIGINS?.split(",") ?? [],
 });
