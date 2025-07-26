@@ -7,7 +7,7 @@ RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 FROM base AS development
-ARG VALKEY_CONNECTION_STRING
+ARG VITE_VALKEY_CONNECTION_STRING
 ARG URL
 ARG BETTER_AUTH_SECRET
 ARG BETTER_AUTH_POSTGRES_URL
