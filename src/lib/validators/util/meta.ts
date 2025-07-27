@@ -1,8 +1,8 @@
 import z from "zod";
 
 export const Meta = z.object({
-  id: z.uuid(),
-  timestamp: z.string(),
+  id: z.string(),
+  timestamp: z.iso.datetime(),
   author: z.string(),
 });
 

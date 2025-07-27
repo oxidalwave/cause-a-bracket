@@ -5,14 +5,12 @@ import { nanoid } from "nanoid";
 import { z } from "zod/v4";
 import { loggerMiddleware } from "~/lib/server/middleware/logger";
 import { sendMessage } from "~/lib/streams/message";
+import { Meta } from "~/lib/validators/util/meta";
 
 export const ChatStreamMessage = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("system"),
-    meta: z.object({
-      id: z.uuid(),
-      timestamp: z.iso.datetime(),
-    }),
+    meta: Meta.omit({ author: true }),
     data: z.discriminatedUnion("event", [
       z.object({
         event: z.enum(["connected", "disconnected"]),
@@ -25,11 +23,7 @@ export const ChatStreamMessage = z.discriminatedUnion("kind", [
   }),
   z.object({
     kind: z.literal("message"),
-    meta: z.object({
-      id: z.uuid(),
-      timestamp: z.iso.datetime(),
-      author: z.string(),
-    }),
+    meta: Meta,
     data: z.object({
       message: z.string(),
     }),
@@ -43,7 +37,9 @@ export const streamChat = createServerFn({ response: "raw" })
   .handler(({ signal }) => {
     const stream = new ReadableStream({
       async start(controller) {
-        const valkey = new Valkey(import.meta.env.VITE_VALKEY_CONNECTION_STRING);
+        const valkey = new Valkey(
+          import.meta.env.VITE_VALKEY_CONNECTION_STRING,
+        );
 
         valkey.subscribe("chat", (err) => {
           if (err) {
