@@ -5,6 +5,7 @@ networks:
     driver: bridge
 services:
   valkey:
+    container_name: cause-a-bracket-valkey
     image: ${COMPOSE_SERVICES_VALKEY_IMAGE}
     environment:
       VALKEY_USERNAME: "${SERVICE_USER_VALKEY}"
@@ -20,6 +21,7 @@ services:
     volumes:
       - valkey_data:/data
   authdb:
+    container_name: cause-a-bracket-authdb
     environment:
       POSTGRES_USER: "${SERVICE_USER_AUTHDB}"
       POSTGRES_PASSWORD: "${SERVICE_PASSWORD_AUTHDB}"
@@ -41,6 +43,7 @@ services:
       args:
         VITEMODE: ${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE}
       context: ${COMPOSE_SERVICES_APP_BUILD_CONTEXT}
+    container_name: cause-a-bracket-app
     depends_on:
       authdb:
         condition: service_healthy
@@ -58,6 +61,7 @@ services:
       - frontend
     restart: unless-stopped
   adminer:
+    container_name: cause-a-bracket-adminer
     depends_on:
       authdb:
         condition: service_healthy
@@ -73,6 +77,7 @@ services:
       - frontend
     restart: unless-stopped
   commander:
+    container_name: cause-a-bracket-commander
     depends_on:
       valkey:
         condition: service_healthy
@@ -92,6 +97,7 @@ services:
       - frontend
     restart: unless-stopped
   nginx:
+    container_name: cause-a-bracket-nginx
     depends_on:
       app:
         condition: service_healthy
