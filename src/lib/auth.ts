@@ -3,21 +3,24 @@ import { reactStartCookies } from "better-auth/react-start";
 import { Pool } from "pg";
 
 const discord =
-  process.env.BETTER_AUTH_DISCORD_CLIENT_ID &&
-  process.env.BETTER_AUTH_DISCORD_CLIENT_SECRET
+  import.meta.env.VITE_BETTER_AUTH_DISCORD_CLIENT_ID &&
+  import.meta.env.VITE_BETTER_AUTH_DISCORD_CLIENT_SECRET
     ? {
-        clientId: process.env.BETTER_AUTH_DISCORD_CLIENT_ID,
-        clientSecret: process.env.BETTER_AUTH_DISCORD_CLIENT_SECRET,
+        clientId: import.meta.env.VITE_BETTER_AUTH_DISCORD_CLIENT_ID,
+        clientSecret: import.meta.env.VITE_BETTER_AUTH_DISCORD_CLIENT_SECRET,
       }
     : undefined;
 
+console.log(import.meta.env.VITE_BETTER_AUTH_TRUSTED_ORIGINS);
+
 export const auth = betterAuth({
   database: new Pool({
-    connectionString: process.env.BETTER_AUTH_POSTGRES_URL,
+    connectionString: import.meta.env.VITE_BETTER_AUTH_POSTGRES_URL,
   }),
   socialProviders: {
     discord,
   },
   plugins: [reactStartCookies()],
-  trustedOrigins: process.env.BETTER_AUTH_TRUSTED_ORIGINS?.split(",") ?? [],
+  trustedOrigins:
+    import.meta.env.VITE_BETTER_AUTH_TRUSTED_ORIGINS?.split(",") ?? [],
 });

@@ -1,35 +1,120 @@
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
 services:
   valkey:
-    container_name: cause-a-bracket-valkey
-    image: valkey/valkey:8.1
-    ports:
-      - "6379:6379"
+    image: ${COMPOSE_SERVICES_VALKEY_IMAGE}
+    environment:
+      VALKEY_USERNAME: "${SERVICE_USER_VALKEY}"
+      VALKEY_PASSWORD: "${SERVICE_PASSWORD_VALKEY}"
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: [ "CMD", "valkey-cli", "-u", "redis://${SERVICE_USER_VALKEY}:${SERVICE_PASSWORD_VALKEY}@localhost:6379", "ping" ]
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - backend
     restart: unless-stopped
     volumes:
       - valkey_data:/data
-  auth-db:
-    container_name: cause-a-bracket-auth-db
-    image: postgres:latest
-    env_file:
-      - ./auth-db.env
+  authdb:
+    environment:
+      POSTGRES_USER: "${SERVICE_USER_AUTHDB}"
+      POSTGRES_PASSWORD: "${SERVICE_PASSWORD_AUTHDB}"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${SERVICE_USER_AUTHDB} -d postgres -h localhost" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    image: ${COMPOSE_SERVICES_AUTHDB_IMAGE}
+    networks:
+      - backend
     ports:
       - "5432:5432"
+    restart: unless-stopped
     volumes:
       - auth_db_data:/var/lib/postgresql/data
-    restart: unless-stopped
   app:
-    container_name: cause-a-bracket-app
     build:
-      context: .
-      dockerfile: ./Dockerfile
+      args:
+        VITEMODE: ${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE}
+      context: ${COMPOSE_SERVICES_APP_BUILD_CONTEXT}
     depends_on:
-      - auth-db
-      - valkey
+      authdb:
+        condition: service_healthy
+        restart: true
+      valkey:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      test: [ "CMD", "node", "-e", "fetch('http://localhost:3000/api/status').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - backend
+      - frontend
+    restart: unless-stopped
+  adminer:
+    depends_on:
+      authdb:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    image: adminer:latest
+    networks:
+      - backend
+      - frontend
+    restart: unless-stopped
+  commander:
+    depends_on:
+      valkey:
+        condition: service_healthy
+        restart: true
+    environment:
+      HTTP_USER: "${SERVICE_USER_VALKEY}"
+      HTTP_PASSWORD: "${SERVICE_PASSWORD_VALKEY}"
+      REDIS_HOSTS: "valkey:valkey:6379:0:${SERVICE_PASSWORD_VALKEY}"
+    healthcheck:
+      test: [ "CMD", "/redis-commander/bin/healthcheck.js" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    image: ${COMPOSE_SERVICES_COMMANDER_IMAGE}
+    networks:
+      - backend
+      - frontend
+    restart: unless-stopped
+  nginx:
+    depends_on:
+      app:
+        condition: service_healthy
+        restart: true
+      adminer:
+        condition: service_healthy
+        restart: true
+      commander:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      test: [ "CMD", "service", "nginx", "status" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    image: nginx:latest
+    networks:
+      - frontend
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    volumes:
+      - ./.compose/config/nginx/etc/nginx/conf.d:/etc/nginx/conf.d:ro
 volumes:
   auth_db_data:
     driver: local

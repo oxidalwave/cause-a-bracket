@@ -43,7 +43,13 @@ export default function AccountAvatar() {
           color="#7289da"
           fullWidth
           onClick={() => {
-            authClient.signIn.social({ provider: "discord" });
+            authClient.signIn.social({
+              provider: "discord",
+              callbackURL:
+                import.meta.env.VITE_BETTER_AUTH_TRUSTED_ORIGINS?.split(
+                  ",",
+                )?.[0],
+            });
           }}
         >
           Discord
