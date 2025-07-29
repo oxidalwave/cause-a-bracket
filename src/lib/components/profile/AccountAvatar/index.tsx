@@ -45,10 +45,6 @@ export default function AccountAvatar() {
           onClick={() => {
             authClient.signIn.social({
               provider: "discord",
-              callbackURL:
-                import.meta.env.VITE_BETTER_AUTH_TRUSTED_ORIGINS?.split(
-                  ",",
-                )?.[0],
             });
           }}
         >
