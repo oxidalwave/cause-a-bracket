@@ -4,7 +4,7 @@ colima = "0.8"
 docker-cli = "28.3"
 docker-compose = "2.38"
 node = "24"
-pnpm = "10.12"
+pnpm = "10.14"
 
 [env]
 _.file = ".env"

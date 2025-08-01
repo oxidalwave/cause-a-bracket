@@ -1,18 +1,24 @@
 import { createMiddleware } from "@tanstack/react-start";
-import { getHeaders } from "@tanstack/react-start/server";
-import authClient from "~/lib/auth-client";
 
 export const authMiddleware = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
-    const { data: session } = await authClient.getSession({
-      fetchOptions: {
-        headers: getHeaders() as HeadersInit,
-      },
+    return next();
+    /*
+    const request = getWebRequest();
+    if (!request?.headers) {
+      return next({ context: { session: null } } as const);
+    }
+    const session = await auth.api.getSession({
+      headers: request.headers,
     });
-    return await next({
+    if (!session) {
+      return next({ context: { session: null } } as const);
+    }
+    return next({
       context: {
         session,
       },
     });
+     */
   },
 );

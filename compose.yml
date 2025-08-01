@@ -4,53 +4,99 @@ networks:
   frontend:
     driver: bridge
 services:
-  valkey:
-    container_name: cause-a-bracket-valkey
-    image: ${COMPOSE_SERVICES_VALKEY_IMAGE}
+  redis:
+    command: [ "redis-server", "--appendonly", "yes", "--requirepass", "${SERVICE_PASSWORD_REDIS:-default}" ]
+    container_name: cause-a-bracket-redis
+    develop:
+      watch:
+        - action: rebuild
+          path: .env
+        - action: rebuild
+          path: .env.${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE:-compose}
     environment:
-      VALKEY_USERNAME: "${SERVICE_USER_VALKEY}"
-      VALKEY_PASSWORD: "${SERVICE_PASSWORD_VALKEY}"
+      REDIS_USERNAME: "${SERVICE_USER_REDIS:-default}"
+      REDIS_PASSWORD: "${SERVICE_PASSWORD_REDIS}"
     healthcheck:
-      test: [ "CMD", "valkey-cli", "-u", "redis://${SERVICE_USER_VALKEY}:${SERVICE_PASSWORD_VALKEY}@localhost:6379", "ping" ]
+      test: [ "CMD", "redis-cli", "-u", "redis://${SERVICE_USER_REDIS:-default}:${SERVICE_PASSWORD_REDIS}@localhost:6379", "ping" ]
       interval: 30s
       timeout: 10s
       retries: 3
-    networks:
-      - backend
-    restart: unless-stopped
-    volumes:
-      - valkey_data:/data
-  authdb:
-    container_name: cause-a-bracket-authdb
-    environment:
-      POSTGRES_USER: "${SERVICE_USER_AUTHDB}"
-      POSTGRES_PASSWORD: "${SERVICE_PASSWORD_AUTHDB}"
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${SERVICE_USER_AUTHDB} -d postgres -h localhost" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    image: ${COMPOSE_SERVICES_AUTHDB_IMAGE}
+    image: ${COMPOSE_SERVICES_REDIS_IMAGE:-redis:8.0-alpine}
     networks:
       - backend
     ports:
-      - "5432:5432"
+      - "${SERVICE_PORT_REDIS:-6379}:6379"
+    profiles:
+      - app
+      - db
+      - devtools
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+  authdb:
+    container_name: cause-a-bracket-authdb
+    develop:
+      watch:
+        - action: rebuild
+          path: .env
+        - action: rebuild
+          path: .env.${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE:-compose}
+    environment:
+      POSTGRES_USER: "${SERVICE_USER_AUTHDB:-postgres}"
+      POSTGRES_PASSWORD: "${SERVICE_PASSWORD_AUTHDB}"
+      POSTGRES_DB: "${SERVICE_DATABASE_AUTHDB:-${SERVICE_USER_AUTHDB:-postgres}}"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${SERVICE_USER_AUTHDB:-postgres} -d ${SERVICE_DATABASE_AUTHDB:-postgres} -h localhost" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    image: ${COMPOSE_SERVICES_AUTHDB_IMAGE:-postgres:14}
+    networks:
+      - backend
+    ports:
+      - "${SERVICE_PORT_AUTHDB:-5432}:5432"
+    profiles:
+      - app
+      - db
+      - devtools
     restart: unless-stopped
     volumes:
       - auth_db_data:/var/lib/postgresql/data
   app:
     build:
       args:
-        VITEMODE: ${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE}
-      context: ${COMPOSE_SERVICES_APP_BUILD_CONTEXT}
+        SERVICE_VITEMODE_APP: ${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE:-compose}
+        SERVICE_DATABASE_AUTHDB: ${SERVICE_DATABASE_AUTHDB:-${SERVICE_USER_AUTHDB:-postgres}}
+        SERVICE_PORT_NGINX: ${SERVICE_PORT_NGINX:-80}
+        SERVICE_BASE64_BETTERAUTHSECRET: ${SERVICE_BASE64_BETTERAUTHSECRET}
+        SERVICE_PASSWORD_REDIS: ${SERVICE_PASSWORD_REDIS}
+        SERVICE_PASSWORD_AUTHDB: ${SERVICE_PASSWORD_AUTHDB}
+        SERVICE_CLIENTID_DISCORD: ${SERVICE_CLIENTID_DISCORD}
+        SERVICE_CLIENTSECRET_DISCORD: ${SERVICE_CLIENTSECRET_DISCORD}
+      context: ${COMPOSE_SERVICES_APP_BUILD_CONTEXT:-.}
     container_name: cause-a-bracket-app
     depends_on:
       authdb:
         condition: service_healthy
         restart: true
-      valkey:
+      redis:
         condition: service_healthy
         restart: true
+    develop:
+      watch:
+        - action: rebuild
+          path: Dockerfile
+        - action: rebuild
+          path: .env
+        - action: rebuild
+          path: .env.${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE:-compose}
+        - action: rebuild
+          path: ./src
+        - action: rebuild
+          path: package.json
+        - action: sync
+          path: public
+          target: public
     healthcheck:
       test: [ "CMD", "node", "-e", "fetch('http://localhost:3000/api/status').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))" ]
       interval: 30s
@@ -59,6 +105,8 @@ services:
     networks:
       - backend
       - frontend
+    profiles:
+      - app
     restart: unless-stopped
   adminer:
     container_name: cause-a-bracket-adminer
@@ -66,38 +114,56 @@ services:
       authdb:
         condition: service_healthy
         restart: true
+    develop:
+      watch:
+        - action: rebuild
+          path: .env
+        - action: rebuild
+          path: .env.${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE:-compose}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
       interval: 30s
       timeout: 10s
       retries: 3
-    image: adminer:latest
+    image: ${COMPOSE_SERVICES_ADMINER_IMAGE:-adminer:latest}
     networks:
       - backend
       - frontend
+    profiles:
+      - app
+      - devtools
     restart: unless-stopped
   commander:
     container_name: cause-a-bracket-commander
     depends_on:
-      valkey:
+      redis:
         condition: service_healthy
         restart: true
+    develop:
+      watch:
+        - action: rebuild
+          path: .env
+        - action: rebuild
+          path: .env.${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE:-compose}
     environment:
-      HTTP_USER: "${SERVICE_USER_VALKEY}"
-      HTTP_PASSWORD: "${SERVICE_PASSWORD_VALKEY}"
-      REDIS_HOSTS: "valkey:valkey:6379:0:${SERVICE_PASSWORD_VALKEY}"
+      HTTP_USER: "${SERVICE_USER_REDIS:-default}"
+      HTTP_PASSWORD: "${SERVICE_PASSWORD_REDIS}"
+      REDIS_HOSTS: "redis:redis:6379:${SERVICE_INDEX_REDIS:-0}:${SERVICE_PASSWORD_REDIS}"
     healthcheck:
       test: [ "CMD", "/redis-commander/bin/healthcheck.js" ]
       interval: 30s
       timeout: 10s
       retries: 3
-    image: ${COMPOSE_SERVICES_COMMANDER_IMAGE}
+    image: ${COMPOSE_SERVICES_COMMANDER_IMAGE:-ghcr.io/joeferner/redis-commander:latest}
     networks:
       - backend
       - frontend
+    profiles:
+      - app
+      - devtools
     restart: unless-stopped
-  nginx:
-    container_name: cause-a-bracket-nginx
+  nginx-app:
+    container_name: cause-a-bracket-nginx-app
     depends_on:
       app:
         condition: service_healthy
@@ -108,21 +174,65 @@ services:
       commander:
         condition: service_healthy
         restart: true
+    develop:
+      watch:
+        - action: rebuild
+          path: .env
+        - action: rebuild
+          path: .env.${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE:-compose}
+        - action: sync+restart
+          path: .compose/config/nginx-app/etc/nginx/conf.d
+          target: /etc/nginx/conf.d
     healthcheck:
       test: [ "CMD", "service", "nginx", "status" ]
       interval: 30s
       timeout: 10s
       retries: 3
-    image: nginx:latest
+    image: ${COMPOSE_SERVICES_NGINX_IMAGE:-nginx:1.29}
     networks:
       - frontend
     ports:
-      - "8080:8080"
+      - "${SERVICE_PORT_NGINX:-80}:8080"
+    profiles:
+      - app
     restart: unless-stopped
     volumes:
-      - ./.compose/config/nginx/etc/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./.compose/config/nginx-app/etc/nginx/conf.d:/etc/nginx/conf.d:ro
+  nginx-devtools:
+    container_name: cause-a-bracket-nginx-devtools
+    depends_on:
+      adminer:
+        condition: service_healthy
+        restart: true
+      commander:
+        condition: service_healthy
+        restart: true
+    develop:
+      watch:
+        - action: rebuild
+          path: .env
+        - action: rebuild
+          path: .env.${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE:-compose}
+        - action: sync+restart
+          path: .compose/config/nginx-devtools/etc/nginx/conf.d
+          target: /etc/nginx/conf.d
+    healthcheck:
+      test: [ "CMD", "service", "nginx", "status" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    image: ${COMPOSE_SERVICES_NGINX_IMAGE:-nginx:1.29}
+    networks:
+      - frontend
+    ports:
+      - "${SERVICE_PORT_NGINX:-80}:8080"
+    profiles:
+      - devtools
+    restart: unless-stopped
+    volumes:
+      - ./.compose/config/nginx-devtools/etc/nginx/conf.d:/etc/nginx/conf.d:ro
 volumes:
   auth_db_data:
     driver: local
-  valkey_data:
+  redis_data:
     driver: local

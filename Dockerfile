@@ -1,19 +1,33 @@
 ARG NODE_VERSION=24
+ARG BASE_IMAGE=node:${NODE_VERSION}-alpine
 ARG PNPM_VERSION=10.13.1
 
-FROM node:${NODE_VERSION}-alpine AS base
+FROM ${BASE_IMAGE} AS base
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 FROM base AS development
-ARG VITEMODE="production"
+ARG SERVICE_VITEMODE_APP="production"
+ARG SERVICE_ENVFILE_APP=".env.${SERVICE_VITEMODE_APP}"
+
+ARG SERVICE_USER_REDIS=default
+ARG SERVICE_USER_AUTHDB=postgres
+ARG SERVICE_HOST_NGINX=localhost
+
+ARG SERVICE_PORT_NGINX
+ARG SERVICE_DATABASE_AUTHDB
+ARG SERVICE_BASE64_BETTERAUTHSECRET
+ARG SERVICE_PASSWORD_REDIS
+ARG SERVICE_PASSWORD_AUTHDB
+ARG SERVICE_CLIENTID_DISCORD
+ARG SERVICE_CLIENTSECRET_DISCORD
 
 RUN pnpm install --frozen-lockfile
 
 COPY . .
-COPY .env.${VITEMODE} .env.production
+COPY ${SERVICE_ENVFILE_APP} .env.production
 RUN pnpm build
 
 FROM base AS production

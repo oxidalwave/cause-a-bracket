@@ -1,12 +1,15 @@
+# Node
 node_modules
-.DS_Store
-.cache
-*.env
-*.env.*
-.env.*
-!*.env.example
-!.env.compose
-!.env.coolify
+
+# Build
 .output
 .nitro
 .tanstack
+
+# [Environment](https://vite.dev/guide/env-and-mode.html#env-files)
+.env
+.env.local
+.env.*.local
+
+# MacOS
+.DS_Store

@@ -1,4 +1,4 @@
-create table "user"
+CREATE TABLE IF NOT EXISTS public.user
 (
     "id"            text      not null primary key,
     "name"          text      not null,
@@ -9,7 +9,7 @@ create table "user"
     "updatedAt"     timestamp not null
 );
 
-create table "session"
+CREATE TABLE IF NOT EXISTS public.session
 (
     "id"        text      not null primary key,
     "expiresAt" timestamp not null,
@@ -21,7 +21,7 @@ create table "session"
     "userId"    text      not null references "user" ("id")
 );
 
-create table "account"
+CREATE TABLE IF NOT EXISTS public.account
 (
     "id"                    text      not null primary key,
     "accountId"             text      not null,
@@ -38,7 +38,7 @@ create table "account"
     "updatedAt"             timestamp not null
 );
 
-create table "verification"
+CREATE TABLE IF NOT EXISTS public.verification
 (
     "id"         text      not null primary key,
     "identifier" text      not null,
