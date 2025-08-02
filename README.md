@@ -14,7 +14,7 @@ To get started with this project, you will need to copy the `.env.example` file 
 environment variables. The environment variables may be populated as such:
 
 - `SERVICE_PASSWORD_REDIS` - generate with `openssl rand -base64 32`
-- `SERVICE_PASSWORD_AUTHDB` - generate with `openssl rand -base64 32`
+- `SERVICE_PASSWORD_POSTGRES` - generate with `openssl rand -base64 32`
 - `SERVICE_BASE64_BETTERAUTHSECRET` - generate with `openssl rand -base64 32`
 - `SERVICE_CLIENTID_DISCORD` - generated
   from [the Discord Developer Portal](https://discord.com/developers/applications)
@@ -30,7 +30,7 @@ docker compose --profile devtools up -d
 ```
 
 Navigate to `http://localhost/devtools/adminer` to access the Adminer webapp. Sign in using the password you set as
-`SERVICE_PASSWORD_AUTHDB`. The url will be "authdb", and the database and username will be "postgres". Navigate to "
+`SERVICE_PASSWORD_POSTGRES`. The url will be "postgres", and the database and username will be "postgres". Navigate to "
 Execute SQL", and run the migration found in `better-auth_migrations/2025-07-19T14-12-08.412Z.sql`. I aim to replace
 this with Prisma or Drizzle or some other ORM with proper migration support in the future.
 
