@@ -33,8 +33,8 @@ services:
     restart: unless-stopped
     volumes:
       - redis_data:/data
-  authdb:
-    container_name: cause-a-bracket-authdb
+  postgres:
+    container_name: cause-a-bracket-postgres
     develop:
       watch:
         - action: rebuild
@@ -42,41 +42,41 @@ services:
         - action: rebuild
           path: .env.${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE:-compose}
     environment:
-      POSTGRES_USER: "${SERVICE_USER_AUTHDB:-postgres}"
-      POSTGRES_PASSWORD: "${SERVICE_PASSWORD_AUTHDB}"
-      POSTGRES_DB: "${SERVICE_DATABASE_AUTHDB:-${SERVICE_USER_AUTHDB:-postgres}}"
+      POSTGRES_USER: "${SERVICE_USER_POSTGRES:-postgres}"
+      POSTGRES_PASSWORD: "${SERVICE_PASSWORD_POSTGRES}"
+      POSTGRES_DB: "${SERVICE_DATABASE_POSTGRES:-${SERVICE_USER_POSTGRES:-postgres}}"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${SERVICE_USER_AUTHDB:-postgres} -d ${SERVICE_DATABASE_AUTHDB:-postgres} -h localhost" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${SERVICE_USER_POSTGRES:-postgres} -d ${SERVICE_DATABASE_POSTGRES:-postgres} -h localhost" ]
       interval: 30s
       timeout: 10s
       retries: 3
-    image: ${COMPOSE_SERVICES_AUTHDB_IMAGE:-postgres:14}
+    image: ${COMPOSE_SERVICES_POSTGRES_IMAGE:-postgres:17}
     networks:
       - backend
     ports:
-      - "${SERVICE_PORT_AUTHDB:-5432}:5432"
+      - "${SERVICE_PORT_POSTGRES:-5432}:5432"
     profiles:
       - app
       - db
       - devtools
     restart: unless-stopped
     volumes:
-      - auth_db_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
   app:
     build:
       args:
         SERVICE_VITEMODE_APP: ${COMPOSE_SERVICES_APP_BUILD_ARGS_VITEMODE:-compose}
-        SERVICE_DATABASE_AUTHDB: ${SERVICE_DATABASE_AUTHDB:-${SERVICE_USER_AUTHDB:-postgres}}
+        SERVICE_DATABASE_POSTGRES: ${SERVICE_DATABASE_POSTGRES:-${SERVICE_USER_POSTGRES:-postgres}}
         SERVICE_PORT_NGINX: ${SERVICE_PORT_NGINX:-80}
         SERVICE_BASE64_BETTERAUTHSECRET: ${SERVICE_BASE64_BETTERAUTHSECRET}
         SERVICE_PASSWORD_REDIS: ${SERVICE_PASSWORD_REDIS}
-        SERVICE_PASSWORD_AUTHDB: ${SERVICE_PASSWORD_AUTHDB}
+        SERVICE_PASSWORD_POSTGRES: ${SERVICE_PASSWORD_POSTGRES}
         SERVICE_CLIENTID_DISCORD: ${SERVICE_CLIENTID_DISCORD}
         SERVICE_CLIENTSECRET_DISCORD: ${SERVICE_CLIENTSECRET_DISCORD}
       context: ${COMPOSE_SERVICES_APP_BUILD_CONTEXT:-.}
     container_name: cause-a-bracket-app
     depends_on:
-      authdb:
+      postgres:
         condition: service_healthy
         restart: true
       redis:
@@ -111,7 +111,7 @@ services:
   adminer:
     container_name: cause-a-bracket-adminer
     depends_on:
-      authdb:
+      postgres:
         condition: service_healthy
         restart: true
     develop:
@@ -232,7 +232,7 @@ services:
     volumes:
       - ./.compose/config/nginx-devtools/etc/nginx/conf.d:/etc/nginx/conf.d:ro
 volumes:
-  auth_db_data:
+  postgres_data:
     driver: local
   redis_data:
     driver: local
