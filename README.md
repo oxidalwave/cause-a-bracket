@@ -26,13 +26,9 @@ environment variables. The environment variables may be populated as such:
 Execute the below command to start the Postgres and Redis services, alongside the development tool webapps.
 
 ```sh
-docker compose --profile devtools up -d
+docker compose --profile db up -d
+pnpx @better-auth/cli migrate --config ./auth-cli.ts
 ```
-
-Navigate to `http://localhost/devtools/adminer` to access the Adminer webapp. Sign in using the password you set as
-`SERVICE_PASSWORD_POSTGRES`. The url will be "postgres", and the database and username will be "postgres". Navigate to "
-Execute SQL", and run the migration found in `better-auth_migrations/2025-07-19T14-12-08.412Z.sql`. I aim to replace
-this with Prisma or Drizzle or some other ORM with proper migration support in the future.
 
 ## Development
 
@@ -47,6 +43,28 @@ This starts your app in development mode, rebuilding assets on file changes.
 
 ## Compose
 
-Alongside the `devtools` Docker Compose profile, you can also run the `app` profile with the below command. This will
-start the databases alongside a production-grade build of the application at `http://localhost:80`. Devtools will still
-be available at `http://localhost:80/devtools/...`.
+Alongside the `db` Docker Compose profile, you can also run the below profiles
+
+### `docker compose --profile devtools up`
+
+This will start the databases alongside a suite of devtools at
+`http://localhost:80/devtools/...`. These tools include:
+
+#### Adminer
+
+A web-based database management tool that allows you to manage relational
+databases. When prompted, use "postgres" as the database type, "postgres" as
+the server, "postgres" as the username, and the value of
+`SERVICE_PASSWORD_POSTGRES` as the password.
+
+#### Redis Commander
+
+A web-based Redis management tool that allows you to view and manage Redis
+databases. When prompted, use "default" as the username and the value of
+`SERVICE_PASSWORD_REDIS` as the password.
+
+### `docker compose --profile app up`
+
+This will start the databases alongside a production-grade build of the
+application at `http://localhost:80`. Devtools will be available at
+`http://localhost:80/devtools/...`.
