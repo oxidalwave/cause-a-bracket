@@ -28,9 +28,6 @@ export const decorators = [
     (renderStory: Function) => (
         <Providers queryClient={queryClient}>{renderStory()}</Providers>
     ),
-    (renderStory: Function) => (
-        <Providers queryClient={queryClient}>{renderStory()}</Providers>
-    ),
 ];
 
 export default preview;
