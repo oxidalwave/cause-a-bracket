@@ -12,9 +12,9 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useState } from "react";
+import { z } from "zod";
 import EntrantCard from "~/lib/components/entrant/EntrantCard";
 import valkey from "~/lib/valkey";
-import { z } from "zod";
 
 const getBracketData = createServerFn({ method: "GET", response: "data" })
   .validator(z.object({ id: z.string() }))
@@ -78,21 +78,25 @@ function Home() {
       />
       <Center>
         <Group>
-          <Card withBorder padding="md">
-            <form
-              action={async (formData) => {
-                await addEntrantToBracket({
-                  data: { id, item: formData.get("item") as string },
-                });
-                navigate({ to: "/brackets/$id", params: { id } });
-              }}
-            >
-              <Stack>
-                <Title order={4}>Add an Entrant</Title>
-                <TextInput name="item" />
-                <Button type="submit">Submit</Button>
-              </Stack>
-            </form>
+          <Card
+            withBorder
+            padding="md"
+            component="form"
+            action={async (formData) => {
+              const { item } = z
+                .object({ item: z.string() })
+                .parse(Object.fromEntries(formData.entries()));
+              await addEntrantToBracket({
+                data: { id, item },
+              });
+              navigate({ to: "/brackets/$id", params: { id } });
+            }}
+          >
+            <Stack>
+              <Title order={4}>Add an Entrant</Title>
+              <TextInput name="item" />
+              <Button type="submit">Submit</Button>
+            </Stack>
           </Card>
         </Group>
       </Center>
