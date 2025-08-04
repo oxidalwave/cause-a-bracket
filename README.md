@@ -27,7 +27,7 @@ Execute the below command to start the Postgres and Redis services, alongside th
 
 ```sh
 docker compose --profile db up -d
-pnpx @better-auth/cli migrate --config ./auth-cli.ts
+pnpm run db:migrate
 ```
 
 ## Development
