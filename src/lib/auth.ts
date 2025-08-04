@@ -2,7 +2,8 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { reactStartCookies } from "better-auth/react-start";
 import type { SocialProviders } from "better-auth/social-providers";
-import pool from "~/lib/db/pool";
+import db from "~/lib/db/drizzle";
+import schema from "~/lib/db/schema";
 
 const discord: SocialProviders["discord"] | undefined =
   import.meta.env.VITE_BETTER_AUTH_DISCORD_CLIENT_ID &&
@@ -15,7 +16,7 @@ const discord: SocialProviders["discord"] | undefined =
     : undefined;
 
 export const auth = betterAuth({
-  database: drizzleAdapter(pool, { provider: "pg" }),
+  database: drizzleAdapter(db, { provider: "pg", schema }),
   socialProviders: {
     discord,
   },
