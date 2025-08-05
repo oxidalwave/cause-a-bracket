@@ -10,7 +10,7 @@ It's deployed automagically with Coolify!
 
 ## Onboarding
 
-To get started with this project, you will need to copy the `.env.example` file to `.env` and fill in the required
+To get started with this project, you will need to load the environment variables in the `.env.example` file to your shell session. This repository assumes that this is done with a tool such as [mise](https://mise.jdx.dev/) or [direnv](https://direnv.net/). If this the case, copy the environment variables to `.env` and fill in the required
 environment variables. The environment variables may be populated as such:
 
 - `SERVICE_PASSWORD_REDIS` - generate with `openssl rand -hex 32`
