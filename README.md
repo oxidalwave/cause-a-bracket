@@ -13,9 +13,9 @@ It's deployed automagically with Coolify!
 To get started with this project, you will need to copy the `.env.example` file to `.env` and fill in the required
 environment variables. The environment variables may be populated as such:
 
-- `SERVICE_PASSWORD_REDIS` - generate with `openssl rand -base64 32`
-- `SERVICE_PASSWORD_POSTGRES` - generate with `openssl rand -base64 32`
-- `SERVICE_BASE64_BETTERAUTHSECRET` - generate with `openssl rand -base64 32`
+- `SERVICE_PASSWORD_REDIS` - generate with `openssl rand -hex 32`
+- `SERVICE_PASSWORD_POSTGRES` - generate with `openssl rand -hex 32`
+- `SERVICE_BASE64_BETTERAUTHSECRET` - generate with `openssl rand -hex 32`
 - `SERVICE_CLIENTID_DISCORD` - generated
   from [the Discord Developer Portal](https://discord.com/developers/applications)
 - `SERVICE_CLIENTSECRET_DISCORD` - generated
