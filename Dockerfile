@@ -34,6 +34,7 @@ RUN pnpm build
 FROM base
 
 RUN pnpm install --frozen-lockfile --prod
+COPY --chown=node:node --chmod=511 drizzle /app/drizzle
 COPY --from=builder --chown=node:node --chmod=511 /app/.output ./.output
 COPY --from=builder --chown=node:node --chmod=511 /app/public ./public
 
