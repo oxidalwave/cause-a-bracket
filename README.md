@@ -27,7 +27,6 @@ Execute the below command to start the Postgres and Redis services, alongside th
 
 ```sh
 docker compose --profile db up -d
-pnpm run db:migrate
 ```
 
 ## Development

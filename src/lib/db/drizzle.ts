@@ -1,4 +1,5 @@
 import { drizzle } from "drizzle-orm/node-postgres";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
 import schema from "~/lib/db/schema";
 
@@ -8,5 +9,7 @@ const db = drizzle({
   }),
   schema,
 });
+
+await migrate(db, { migrationsFolder: "./drizzle" });
 
 export default db;
