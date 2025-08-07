@@ -20,7 +20,6 @@ RUN pnpm install --frozen-lockfile
 COPY --exclude=.env.* \
     --exclude=.env \
     --exclude=node_modules \
-    --exclude=.storybook \
     --exclude=idea \
     --exclude=.github \
     --exclude=.compose \
