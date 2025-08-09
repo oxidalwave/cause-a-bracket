@@ -12,6 +12,9 @@ export default defineConfig({
     projects: ["./tsconfig.json"]
   }), tanstackStart({
     target: "node-server",
-    customViteReactPlugin: true
+    customViteReactPlugin: true,
+    server: {
+      entry: "server.ts",
+    }
   }), react()]
 });
