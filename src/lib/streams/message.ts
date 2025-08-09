@@ -1,19 +1,5 @@
 import type { z } from "zod/v4";
 
-const encoder = new TextEncoder();
-
-export const sendMessage = <TMessage>(
-  controller: ReadableStreamDefaultController,
-  message: TMessage,
-) => {
-  const stringified = JSON.stringify(message);
-  const encoded = encoder.encode(stringified);
-  controller.enqueue(encoded);
-};
-
-export const encode = <TMessage>(message: TMessage): Uint8Array =>
-  encoder.encode(JSON.stringify(message));
-
 const decoder = new TextDecoder();
 
 export const decode = <TSchema extends z.ZodType>(

@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { z } from "zod/v4";
 import { decode } from "../streams/message";
 
-type UseStreamOptions<T> = {
+export type UseStreamOptions<T> = {
   queryKey: QueryKey;
   queryFn: () => Promise<Response>;
   schema: z.ZodType<T>;

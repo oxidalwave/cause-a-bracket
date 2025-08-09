@@ -4,7 +4,7 @@ import type { ChatStreamMessage } from "~/lib/server/functions/chat/streamChat";
 import ChatMessage from "./ChatMessage";
 
 type ChatLogProps = {
-  messages: (z.infer<typeof ChatStreamMessage> & { kind: "message" })[];
+  messages: (z.infer<typeof ChatStreamMessage> & { kind: "user" })[];
   user: string;
 };
 

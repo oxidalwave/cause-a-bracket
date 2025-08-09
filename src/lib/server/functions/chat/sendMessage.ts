@@ -4,8 +4,6 @@ import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 import { z } from "zod/v4";
 import { auth } from "~/lib/auth";
-import { authMiddleware } from "~/lib/server/middleware/auth";
-import { loggerMiddleware } from "~/lib/server/middleware/logger";
 import valkey from "~/lib/valkey";
 
 export const sendMessage = createServerFn({ method: "POST" })
@@ -14,7 +12,6 @@ export const sendMessage = createServerFn({ method: "POST" })
       message: z.string(),
     }),
   )
-  .middleware([loggerMiddleware, authMiddleware])
   .handler(async ({ data }) => {
     // TODO: Move this to authMiddleware
     const request = getWebRequest();
@@ -30,7 +27,7 @@ export const sendMessage = createServerFn({ method: "POST" })
     valkey.publish(
       "chat",
       JSON.stringify({
-        kind: "message",
+        kind: "user",
         data,
         meta: {
           id: nanoid(),

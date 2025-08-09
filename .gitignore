@@ -7,6 +7,7 @@ node_modules
 .tanstack
 
 # [Environment](https://vite.dev/guide/env-and-mode.html#env-files)
+.envrc
 .env
 .env.local
 .env.*.local

@@ -3,12 +3,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { ChatIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 import { z } from "zod/v4";
-import useStream from "~/lib/hooks/useStream";
 import { sendMessage } from "~/lib/server/functions/chat/sendMessage";
-import {
-  ChatStreamMessage,
-  streamChat,
-} from "~/lib/server/functions/chat/streamChat";
+import { useStreamChat } from "~/lib/server/functions/chat/streamChat";
 import ChatForm from "./ChatBox";
 import ChatMessage from "./ChatMessage";
 
@@ -16,10 +12,7 @@ export default function Chat() {
   const [opened, { open, close }] = useDisclosure();
   const [read, setRead] = useState(true);
 
-  const data = useStream({
-    queryKey: ["chat"],
-    queryFn: streamChat,
-    schema: ChatStreamMessage,
+  const data = useStreamChat({
     onChunk: () => {
       if (!opened) {
         setRead(false);
@@ -43,7 +36,7 @@ export default function Chat() {
         <Stack>
           <Stack>
             {data
-              .filter((d) => d.kind === "message")
+              .filter((d) => d.kind === "user")
               .map((d) => (
                 <ChatMessage key={d.meta.id} message={d} />
               ))}

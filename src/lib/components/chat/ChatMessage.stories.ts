@@ -25,7 +25,7 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     message: {
-      kind: "message",
+      kind: "user",
       data: {
         message: "Hello, world!",
       },

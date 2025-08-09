@@ -2,39 +2,51 @@ import { createServerFn } from "@tanstack/react-start";
 import dayjs from "dayjs";
 import Valkey from "iovalkey";
 import { nanoid } from "nanoid";
+import { match } from "ts-pattern";
 import { z } from "zod/v4";
-import { loggerMiddleware } from "~/lib/server/middleware/logger";
-import { sendMessage } from "~/lib/streams/message";
+import useStream, { type UseStreamOptions } from "~/lib/hooks/useStream";
 import { Meta } from "~/lib/validators/util/meta";
 
-export const ChatStreamMessage = z.discriminatedUnion("kind", [
-  z.object({
-    kind: z.literal("system"),
-    meta: Meta.omit({ author: true }),
-    data: z.discriminatedUnion("event", [
-      z.object({
-        event: z.enum(["connected", "disconnected"]),
-      }),
-      z.object({
-        event: z.enum(["error"]),
-        message: z.string(),
-      }),
-    ]),
-  }),
-  z.object({
-    kind: z.literal("message"),
-    meta: Meta,
-    data: z.object({
+const SystemMessage = z.object({
+  kind: z.literal("system"),
+  meta: Meta.omit({ author: true }),
+  data: z.discriminatedUnion("event", [
+    z.object({
+      event: z.enum(["connected", "disconnected"]),
+    }),
+    z.object({
+      event: z.enum(["error"]),
       message: z.string(),
     }),
+  ]),
+});
+
+const UserMessage = z.object({
+  kind: z.literal("user"),
+  meta: Meta,
+  data: z.object({
+    message: z.string(),
   }),
+});
+
+export const ChatStreamMessage = z.discriminatedUnion("kind", [
+  SystemMessage,
+  UserMessage,
 ]);
 
-const sendChatMessage = sendMessage<z.infer<typeof ChatStreamMessage>>;
+const encoder = new TextEncoder();
 
-export const streamChat = createServerFn({ response: "raw" })
-  .middleware([loggerMiddleware])
-  .handler(({ signal }) => {
+const sendChatMessage = (
+  controller: ReadableStreamDefaultController,
+  message: z.infer<typeof ChatStreamMessage>,
+) => {
+  const stringified = JSON.stringify(message);
+  const encoded = encoder.encode(stringified);
+  controller.enqueue(encoded);
+};
+
+export const streamChat = createServerFn({ response: "raw" }).handler(
+  ({ signal }) => {
     const stream = new ReadableStream({
       async start(controller) {
         const valkey = new Valkey(import.meta.env.VITE_REDIS_CONNECTION_STRING);
@@ -55,7 +67,6 @@ export const streamChat = createServerFn({ response: "raw" })
             });
             controller.close();
           } else {
-            console.log("Subscribed to chat channel");
             sendChatMessage(controller, {
               kind: "system",
               meta: {
@@ -69,40 +80,30 @@ export const streamChat = createServerFn({ response: "raw" })
           }
         });
 
-        valkey.on("message", (channel, message) => {
-          const parsedMessage = JSON.parse(message);
-          const validated = ChatStreamMessage.safeParse(parsedMessage);
-          if (!validated.success) {
-            console.error("Invalid message received:", validated.error);
-            sendChatMessage(controller, {
-              kind: "system",
-              meta: {
-                id: nanoid(),
-                timestamp: dayjs().toISOString(),
+        valkey.on("message", (channel, message) =>
+          match([{ channel }, ChatStreamMessage.safeParse(JSON.parse(message))])
+            .with([{}, { success: false }], ([_, { error }]) => {
+              console.error("Invalid message received:", error);
+              sendChatMessage(controller, {
+                kind: "system",
+                meta: {
+                  id: nanoid(),
+                  timestamp: dayjs().toISOString(),
+                },
+                data: {
+                  event: "error",
+                  message: `Invalid message format: ${error.message}`,
+                },
+              });
+            })
+            .with(
+              [{ channel: "chat" }, { success: true, data: { kind: "user" } }],
+              ([_, { data }]) => {
+                sendChatMessage(controller, data);
               },
-              data: {
-                event: "error",
-                message: `Invalid message format: ${validated.error.message}`,
-              },
-            });
-            return;
-          }
-          switch (channel) {
-            case "chat":
-              switch (validated.data.kind) {
-                case "system":
-                  break;
-                case "message":
-                  sendChatMessage(controller, validated.data);
-                  break;
-                default:
-                  console.warn("Unknown message kind:", validated.data);
-              }
-              break;
-            default:
-              break;
-          }
-        });
+            )
+            .run(),
+        );
 
         signal.addEventListener("abort", () => {
           valkey.unsubscribe("chat", (err) => {
@@ -134,4 +135,15 @@ export const streamChat = createServerFn({ response: "raw" })
         Connection: "keep-alive",
       },
     });
+  },
+);
+
+export const useStreamChat = (
+  opts: Pick<UseStreamOptions<z.infer<typeof ChatStreamMessage>>, "onChunk">,
+) =>
+  useStream({
+    queryKey: ["chat"],
+    queryFn: streamChat,
+    schema: ChatStreamMessage,
+    ...opts,
   });

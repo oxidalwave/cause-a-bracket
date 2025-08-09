@@ -3,7 +3,7 @@ import type { z } from "zod/v4";
 import type { ChatStreamMessage } from "~/lib/server/functions/chat/streamChat";
 
 type ChatMessageProps = {
-  message: z.infer<typeof ChatStreamMessage> & { kind: "message" };
+  message: z.infer<typeof ChatStreamMessage> & { kind: "user" };
 };
 
 export default function ChatMessage({ message }: ChatMessageProps) {
