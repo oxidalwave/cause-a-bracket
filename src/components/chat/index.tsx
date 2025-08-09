@@ -3,8 +3,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { ChatIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 import { z } from "zod/v4";
-import { sendMessage } from "~/lib/server/functions/chat/sendMessage";
-import { useStreamChat } from "~/lib/server/functions/chat/streamChat";
+import { sendMessage } from "~/lib/chat/sendMessage";
+import { useStreamChat } from "~/lib/chat/streamChat";
 import ChatForm from "./ChatBox";
 import ChatMessage from "./ChatMessage";
 

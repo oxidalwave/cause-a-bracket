@@ -4,8 +4,8 @@ import Valkey from "iovalkey";
 import { nanoid } from "nanoid";
 import { match } from "ts-pattern";
 import { z } from "zod/v4";
-import useStream, { type UseStreamOptions } from "~/lib/hooks/useStream";
-import { Meta } from "~/lib/validators/util/meta";
+import useStream, { type UseStreamOptions } from "~/hooks/useStream";
+import { Meta } from "~/validators/util/meta";
 
 const SystemMessage = z.object({
   kind: z.literal("system"),

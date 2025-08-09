@@ -13,7 +13,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { z } from "zod";
-import EntrantCard from "~/lib/components/entrant/EntrantCard";
+import EntrantCard from "~/components/entrant/EntrantCard";
 import valkey from "~/lib/valkey";
 
 const getBracketData = createServerFn({ method: "GET", response: "data" })

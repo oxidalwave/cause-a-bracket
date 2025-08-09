@@ -1,7 +1,7 @@
 import { type QueryKey, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import type { z } from "zod/v4";
-import { decode } from "../streams/message";
+import { decode } from "~/lib/streams/message";
 
 export type UseStreamOptions<T> = {
   queryKey: QueryKey;

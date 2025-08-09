@@ -1,7 +1,7 @@
 import { Card, Flex } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
-import Twist from "~/lib/components/animation/Twist";
-import TsLink from "~/lib/components/TsLink";
+import Twist from "~/components/animation/Twist";
+import TsLink from "~/components/TsLink";
 
 export const Route = createFileRoute("/")({
   component: Home,

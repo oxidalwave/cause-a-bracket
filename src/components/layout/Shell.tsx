@@ -1,8 +1,8 @@
 import { Affix, AppShell, type AppShellProps } from "@mantine/core";
 import { ListIcon } from "@phosphor-icons/react";
 import type { PropsWithChildren } from "react";
+import Chat from "~/components/chat";
 import authClient from "~/lib/auth-client";
-import Chat from "~/lib/components/chat";
 import AccountAvatar from "../profile/AccountAvatar";
 import TsLink from "../TsLink";
 import Body from "./Body";

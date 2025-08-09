@@ -1,7 +1,7 @@
 import {betterAuth} from "better-auth";
 import {Pool} from "pg";
 import {drizzleAdapter} from "better-auth/adapters/drizzle";
-import schema from "./src/lib/db/schema";
+import schema from "./src/db/schema";
 import {drizzle} from "drizzle-orm/node-postgres";
 
 export const auth = betterAuth({

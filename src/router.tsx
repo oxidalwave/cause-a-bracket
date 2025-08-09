@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
-import { DefaultCatchBoundary } from "./lib/components/DefaultCatchBoundary";
-import { NotFound } from "./lib/components/NotFound";
+import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
+import { NotFound } from "~/components/NotFound";
 import { routeTree } from "./routeTree.gen";
 
 // NOTE: Most of the integration code found here is experimental and will

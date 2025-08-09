@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
-import schema from "~/lib/db/schema";
+import * as schema from "~/db/schema";
 
 const db = drizzle({
   client: new Pool({
@@ -10,6 +10,11 @@ const db = drizzle({
   schema,
 });
 
-await migrate(db, { migrationsFolder: "./drizzle" });
+console.log("Migrating database...");
+await migrate(db, { migrationsFolder: "./drizzle" })
+  .then(() => console.log("Migration was successful"))
+  .catch((e) => {
+    console.error("An error occurred during migration: ", e);
+  });
 
 export default db;

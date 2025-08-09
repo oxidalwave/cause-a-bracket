@@ -2,8 +2,8 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { reactStartCookies } from "better-auth/react-start";
 import type { SocialProviders } from "better-auth/social-providers";
-import db from "~/lib/db/drizzle";
-import schema from "~/lib/db/schema";
+import db from "~/db/drizzle";
+import * as schema from "~/db/schema";
 
 const discord: SocialProviders["discord"] | undefined =
   import.meta.env.VITE_BETTER_AUTH_DISCORD_CLIENT_ID &&
