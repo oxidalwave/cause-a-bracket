@@ -1,4 +1,10 @@
-import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { bytea } from "~/db/custom-types";
 
 export const user = pgTable("user", {
@@ -62,7 +68,7 @@ export const verification = pgTable("verification", {
 });
 
 export const category = pgTable("category", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   name: text("name").unique().notNull(),
   createdAt: timestamp("created_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
@@ -73,11 +79,11 @@ export const category = pgTable("category", {
 });
 
 export const entry = pgTable("entry", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   name: text("name").notNull(),
   description: text("description"),
   image: bytea("image"),
-  categoryId: text("category_id")
+  categoryId: integer("category_id")
     .references(() => category.id, {
       onDelete: "cascade",
     })
@@ -91,7 +97,7 @@ export const entry = pgTable("entry", {
 });
 
 export const descriptor = pgTable("descriptor", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   name: text("name").unique().notNull(),
   createdAt: timestamp("created_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
@@ -102,13 +108,13 @@ export const descriptor = pgTable("descriptor", {
 });
 
 export const bracket = pgTable("bracket", {
-  id: text("id").primaryKey(),
-  categoryId: text("category_id")
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  categoryId: integer("category_id")
     .references(() => category.id, {
       onDelete: "cascade",
     })
     .notNull(),
-  descriptorId: text("descriptor_id")
+  descriptorId: integer("descriptor_id")
     .references(() => descriptor.id, {
       onDelete: "cascade",
     })
@@ -122,14 +128,14 @@ export const bracket = pgTable("bracket", {
 });
 
 export const match = pgTable("match", {
-  id: text("id").primaryKey(),
-  bracketId: text("bracket_id")
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  bracketId: integer("bracket_id")
     .references(() => bracket.id, { onDelete: "cascade" })
     .notNull(),
-  leftEntryId: text("left_entry_id")
+  leftEntryId: integer("left_entry_id")
     .references(() => entry.id, { onDelete: "cascade" })
     .notNull(),
-  rightEntryId: text("right_entry_id")
+  rightEntryId: integer("right_entry_id")
     .references(() => entry.id, { onDelete: "cascade" })
     .notNull(),
   createdAt: timestamp("created_at")
@@ -141,14 +147,14 @@ export const match = pgTable("match", {
 });
 
 export const vote = pgTable("vote", {
-  id: text("id").primaryKey(),
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   userId: text("user_id")
     .references(() => user.id)
     .notNull(),
-  match: text("match_id")
+  matchId: integer("match_id")
     .references(() => match.id, { onDelete: "cascade" })
     .notNull(),
-  entry: text("entry_id")
+  entryId: integer("entry_id")
     .references(() => entry.id, { onDelete: "cascade" })
     .notNull(),
   createdAt: timestamp("created_at")
