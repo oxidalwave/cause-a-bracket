@@ -12,22 +12,8 @@
     {
       "idx": 1,
       "version": "7",
-      "when": 1754766277060,
-      "tag": "0001_glamorous_oracle",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1754770730843,
-      "tag": "0002_windy_james_howlett",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1754771243947,
-      "tag": "0003_wise_strong_guy",
+      "when": 1754776322020,
+      "tag": "0001_clear_firedrake",
       "breakpoints": true
     }
   ]

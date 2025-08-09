@@ -15,6 +15,7 @@ import { useState } from "react";
 import { z } from "zod";
 import EntrantCard from "~/components/entrant/EntrantCard";
 import valkey from "~/lib/valkey";
+import createEntry from "~/server/entry/createEntry";
 
 const getBracketData = createServerFn({ method: "GET", response: "data" })
   .validator(z.object({ id: z.string() }))
@@ -36,18 +37,12 @@ const getBracketEntrants = createServerFn({ method: "GET", response: "data" })
     async ({ data }) => await valkey.lrange(`entrants-${data.id}`, 0, -1),
   );
 
-const addEntrantToBracket = createServerFn({ method: "POST", response: "data" })
-  .validator(z.object({ id: z.string(), item: z.string() }))
-  .handler(
-    async ({ data }) => await valkey.rpush(`entrants-${data.id}`, data.item),
-  );
-
 export const Route = createFileRoute("/brackets/$id")({
   component: Home,
-  params: z.object({ id: z.string() }),
+  params: z.object({ id: z.number().int().min(1) }),
   loader: async ({ params }) => ({
-    data: await getBracketData({ data: params }),
-    brackets: await getBracketEntrants({ data: params }),
+    data: await getBracketData({ data: { id: String(params.id) } }),
+    brackets: await getBracketEntrants({ data: { id: String(params.id) } }),
   }),
 });
 
@@ -65,7 +60,9 @@ function Home() {
 
   const handleBlurCategory: TextInputProps["onBlur"] = (e) => {
     e.preventDefault();
-    setBracketData({ data: { id, data: { name: e.target.value } } });
+    setBracketData({
+      data: { id: String(id), data: { name: e.target.value } },
+    });
   };
 
   return (
@@ -86,8 +83,8 @@ function Home() {
               const { item } = z
                 .object({ item: z.string() })
                 .parse(Object.fromEntries(formData.entries()));
-              await addEntrantToBracket({
-                data: { id, item },
+              await createEntry({
+                data: { name: item, category: { id: Number(id) } },
               });
               navigate({ to: "/brackets/$id", params: { id } });
             }}

@@ -1,13 +1,13 @@
 CREATE TABLE "bracket" (
-	"id" text PRIMARY KEY NOT NULL,
-	"category_id" text NOT NULL,
-	"descriptor_id" text NOT NULL,
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "bracket_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"category_id" integer NOT NULL,
+	"descriptor_id" integer NOT NULL,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "category" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "category_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"name" text NOT NULL,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE "category" (
 );
 --> statement-breakpoint
 CREATE TABLE "descriptor" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "descriptor_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"name" text NOT NULL,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL,
@@ -23,29 +23,29 @@ CREATE TABLE "descriptor" (
 );
 --> statement-breakpoint
 CREATE TABLE "entry" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "entry_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"name" text NOT NULL,
 	"description" text,
 	"image" "bytea",
-	"category_id" text NOT NULL,
+	"category_id" integer NOT NULL,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "match" (
-	"id" text PRIMARY KEY NOT NULL,
-	"bracket_id" text NOT NULL,
-	"left_entry_id" text NOT NULL,
-	"right_entry_id" text NOT NULL,
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "match_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"bracket_id" integer NOT NULL,
+	"left_entry_id" integer NOT NULL,
+	"right_entry_id" integer NOT NULL,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "vote" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "vote_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"user_id" text NOT NULL,
-	"match_id" text NOT NULL,
-	"entry_id" text NOT NULL,
+	"match_id" integer NOT NULL,
+	"entry_id" integer NOT NULL,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL
 );

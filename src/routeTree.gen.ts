@@ -12,6 +12,10 @@ import { createServerRootRoute } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DescriptorsIndexRouteImport } from './routes/descriptors/index'
+import { Route as CategoriesIndexRouteImport } from './routes/categories/index'
+import { Route as DescriptorsIdRouteImport } from './routes/descriptors/$id'
+import { Route as CategoriesIdRouteImport } from './routes/categories/$id'
 import { Route as BracketsIdRouteImport } from './routes/brackets/$id'
 import { ServerRoute as ApiStatusServerRouteImport } from './routes/api/status'
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
@@ -21,6 +25,26 @@ const rootServerRouteImport = createServerRootRoute()
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DescriptorsIndexRoute = DescriptorsIndexRouteImport.update({
+  id: '/descriptors/',
+  path: '/descriptors/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
+  id: '/categories/',
+  path: '/categories/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DescriptorsIdRoute = DescriptorsIdRouteImport.update({
+  id: '/descriptors/$id',
+  path: '/descriptors/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriesIdRoute = CategoriesIdRouteImport.update({
+  id: '/categories/$id',
+  path: '/categories/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BracketsIdRoute = BracketsIdRouteImport.update({
@@ -42,27 +66,62 @@ const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/brackets/$id': typeof BracketsIdRoute
+  '/categories/$id': typeof CategoriesIdRoute
+  '/descriptors/$id': typeof DescriptorsIdRoute
+  '/categories': typeof CategoriesIndexRoute
+  '/descriptors': typeof DescriptorsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/brackets/$id': typeof BracketsIdRoute
+  '/categories/$id': typeof CategoriesIdRoute
+  '/descriptors/$id': typeof DescriptorsIdRoute
+  '/categories': typeof CategoriesIndexRoute
+  '/descriptors': typeof DescriptorsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/brackets/$id': typeof BracketsIdRoute
+  '/categories/$id': typeof CategoriesIdRoute
+  '/descriptors/$id': typeof DescriptorsIdRoute
+  '/categories/': typeof CategoriesIndexRoute
+  '/descriptors/': typeof DescriptorsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/brackets/$id'
+  fullPaths:
+    | '/'
+    | '/brackets/$id'
+    | '/categories/$id'
+    | '/descriptors/$id'
+    | '/categories'
+    | '/descriptors'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/brackets/$id'
-  id: '__root__' | '/' | '/brackets/$id'
+  to:
+    | '/'
+    | '/brackets/$id'
+    | '/categories/$id'
+    | '/descriptors/$id'
+    | '/categories'
+    | '/descriptors'
+  id:
+    | '__root__'
+    | '/'
+    | '/brackets/$id'
+    | '/categories/$id'
+    | '/descriptors/$id'
+    | '/categories/'
+    | '/descriptors/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BracketsIdRoute: typeof BracketsIdRoute
+  CategoriesIdRoute: typeof CategoriesIdRoute
+  DescriptorsIdRoute: typeof DescriptorsIdRoute
+  CategoriesIndexRoute: typeof CategoriesIndexRoute
+  DescriptorsIndexRoute: typeof DescriptorsIndexRoute
 }
 export interface FileServerRoutesByFullPath {
   '/api/status': typeof ApiStatusServerRoute
@@ -99,6 +158,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/descriptors/': {
+      id: '/descriptors/'
+      path: '/descriptors'
+      fullPath: '/descriptors'
+      preLoaderRoute: typeof DescriptorsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categories/': {
+      id: '/categories/'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof CategoriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/descriptors/$id': {
+      id: '/descriptors/$id'
+      path: '/descriptors/$id'
+      fullPath: '/descriptors/$id'
+      preLoaderRoute: typeof DescriptorsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categories/$id': {
+      id: '/categories/$id'
+      path: '/categories/$id'
+      fullPath: '/categories/$id'
+      preLoaderRoute: typeof CategoriesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/brackets/$id': {
       id: '/brackets/$id'
       path: '/brackets/$id'
@@ -130,6 +217,10 @@ declare module '@tanstack/react-start/server' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BracketsIdRoute: BracketsIdRoute,
+  CategoriesIdRoute: CategoriesIdRoute,
+  DescriptorsIdRoute: DescriptorsIdRoute,
+  CategoriesIndexRoute: CategoriesIndexRoute,
+  DescriptorsIndexRoute: DescriptorsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

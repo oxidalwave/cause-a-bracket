@@ -27,7 +27,7 @@ export default function Shell(props: ShellProps) {
         <TsLink.Button
           to="/brackets/$id"
           params={{
-            id: "abcd",
+            id: 1234,
           }}
         >
           Cause a Bracket!
