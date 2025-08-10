@@ -4,11 +4,12 @@ import { z } from "zod/v4";
 import db from "~/db/drizzle";
 import { descriptor } from "~/db/schema";
 import authMiddleware from "~/server/middleware/authMiddleware";
+import loggingMiddleware from "~/server/middleware/loggingMiddleware";
 import atomic from "~/server/utils/atomic";
 import { generateExistingMeta } from "~/server/utils/generateExistingMeta";
 
 const updateDescriptor = createServerFn()
-  .middleware([authMiddleware])
+  .middleware([loggingMiddleware, authMiddleware])
   .validator(z.object({ id: z.number().int().min(1), name: z.string().min(1) }))
   .handler(
     async ({ context, data }) =>

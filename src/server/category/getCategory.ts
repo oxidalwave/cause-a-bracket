@@ -4,10 +4,13 @@ import { z } from "zod/v4";
 import db from "~/db/drizzle";
 import { category } from "~/db/schema";
 import type { CategoryDto } from "~/lib/dto/category";
+import { IdSchema } from "~/lib/dto/utils/id";
+import loggingMiddleware from "~/server/middleware/loggingMiddleware";
 import atomic from "~/server/utils/atomic";
 
 const getCategory = createServerFn()
-  .validator(z.object({ id: z.number().int().min(1) }))
+  .middleware([loggingMiddleware])
+  .validator(z.object({ id: IdSchema }))
   .handler(
     async ({ data }): Promise<CategoryDto> =>
       await atomic(

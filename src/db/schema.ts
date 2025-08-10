@@ -79,15 +79,21 @@ const meta = {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
   createdBy: text("created_by")
-    .references(() => user.id, { onDelete: "cascade" })
+    .references(() => user.id, { onDelete: "restrict" })
     .notNull(),
   updatedAt: timestamp("updated_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
   updatedBy: text("updated_by")
-    .references(() => user.id, { onDelete: "cascade" })
+    .references(() => user.id, { onDelete: "restrict" })
     .notNull(),
 };
+
+export const image = pgTable("image", {
+  id: id(),
+  image: bytea("image").notNull(),
+  mimeType: text("mime_type").notNull(),
+});
 
 export const category = pgTable("category", {
   id: id(),
@@ -99,7 +105,9 @@ export const entry = pgTable("entry", {
   id: id(),
   name: text("name").notNull(),
   description: text("description"),
-  image: bytea("image"),
+  imageId: integer("image_id").references(() => image.id, {
+    onDelete: "set null",
+  }),
   categoryId: integer("category_id")
     .references(() => category.id, {
       onDelete: "cascade",
