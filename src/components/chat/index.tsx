@@ -2,7 +2,6 @@ import { ActionIcon, Drawer, Indicator, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ChatIcon } from "@phosphor-icons/react";
 import { useState } from "react";
-import { z } from "zod/v4";
 import { sendMessage } from "~/lib/chat/sendMessage";
 import { useStreamChat } from "~/lib/chat/streamChat";
 import ChatForm from "./ChatBox";
@@ -42,11 +41,9 @@ export default function Chat() {
               ))}
           </Stack>
           <ChatForm
-            action={async (formData) => {
+            action={async (data) => {
               await sendMessage({
-                data: {
-                  message: z.string().parse(formData.get("message")),
-                },
+                data,
               });
             }}
           />

@@ -1,14 +1,30 @@
 import { ActionIcon, TextInput } from "@mantine/core";
 import { PaperPlaneIcon } from "@phosphor-icons/react";
+import type { FormHTMLAttributes } from "react";
+import { z } from "zod/v4";
+import formAction from "~/lib/form/formAction";
 
-type ChatBoxProps = {
-  disabled?: boolean;
-  action: (formData: FormData) => Promise<void>;
+type ChatBoxFormData = {
+  message: string;
 };
 
-export default function ChatForm({ action, disabled }: ChatBoxProps) {
+type ChatBoxProps = Omit<
+  FormHTMLAttributes<HTMLFormElement>,
+  "action" | "children"
+> & {
+  disabled?: boolean;
+  action: (formData: ChatBoxFormData) => Promise<void>;
+};
+
+export default function ChatForm({ action, disabled, ...props }: ChatBoxProps) {
   return (
-    <form action={action}>
+    <form
+      {...props}
+      action={formAction({
+        schema: z.object({ message: z.string() }),
+        action,
+      })}
+    >
       <TextInput
         data-autofocus
         disabled={disabled}

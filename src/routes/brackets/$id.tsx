@@ -14,6 +14,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { z } from "zod";
 import EntrantCard from "~/components/entrant/EntrantCard";
+import formAction from "~/lib/form/formAction";
 import valkey from "~/lib/valkey";
 import createEntry from "~/server/entry/createEntry";
 
@@ -79,19 +80,19 @@ function Home() {
             withBorder
             padding="md"
             component="form"
-            action={async (formData) => {
-              const { item } = z
-                .object({ item: z.string() })
-                .parse(Object.fromEntries(formData.entries()));
-              await createEntry({
-                data: { name: item, category: { id: Number(id) } },
-              });
-              navigate({ to: "/brackets/$id", params: { id } });
-            }}
+            action={formAction({
+              schema: z.object({ name: z.string() }),
+              action: async ({ name }) => {
+                await createEntry({
+                  data: { name, category: { id: Number(id) } },
+                });
+                navigate({ to: "/brackets/$id", params: { id } });
+              },
+            })}
           >
             <Stack>
               <Title order={4}>Add an Entrant</Title>
-              <TextInput name="item" />
+              <TextInput name="name" />
               <Button type="submit">Submit</Button>
             </Stack>
           </Card>
