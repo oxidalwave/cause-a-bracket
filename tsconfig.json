@@ -33,6 +33,7 @@
         "./src/*"
       ]
     },
+    "noUncheckedIndexedAccess": true,
     "noEmit": true
   }
 }

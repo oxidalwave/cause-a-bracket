@@ -7,6 +7,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { bytea } from "~/db/custom-types";
 
+/** These database tables are defined by Better Auth */
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -67,19 +68,35 @@ export const verification = pgTable("verification", {
   ),
 });
 
-export const category = pgTable("category", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  name: text("name").unique().notNull(),
+/** End Better Auth tables */
+
+/** Common ID field for all tables using a Primary Key */
+const id = () => integer("id").primaryKey().generatedAlwaysAsIdentity();
+
+/** Common meta fields for all tables */
+const meta = {
   createdAt: timestamp("created_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  createdBy: text("created_by")
+    .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
   updatedAt: timestamp("updated_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
+  updatedBy: text("updated_by")
+    .references(() => user.id, { onDelete: "cascade" })
+    .notNull(),
+};
+
+export const category = pgTable("category", {
+  id: id(),
+  name: text("name").unique().notNull(),
+  ...meta,
 });
 
 export const entry = pgTable("entry", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  id: id(),
   name: text("name").notNull(),
   description: text("description"),
   image: bytea("image"),
@@ -88,27 +105,17 @@ export const entry = pgTable("entry", {
       onDelete: "cascade",
     })
     .notNull(),
-  createdAt: timestamp("created_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  updatedAt: timestamp("updated_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
+  ...meta,
 });
 
 export const descriptor = pgTable("descriptor", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  id: id(),
   name: text("name").unique().notNull(),
-  createdAt: timestamp("created_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  updatedAt: timestamp("updated_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
+  ...meta,
 });
 
 export const bracket = pgTable("bracket", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  id: id(),
   categoryId: integer("category_id")
     .references(() => category.id, {
       onDelete: "cascade",
@@ -119,16 +126,11 @@ export const bracket = pgTable("bracket", {
       onDelete: "cascade",
     })
     .notNull(),
-  createdAt: timestamp("created_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  updatedAt: timestamp("updated_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
+  ...meta,
 });
 
 export const match = pgTable("match", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  id: id(),
   bracketId: integer("bracket_id")
     .references(() => bracket.id, { onDelete: "cascade" })
     .notNull(),
@@ -138,16 +140,11 @@ export const match = pgTable("match", {
   rightEntryId: integer("right_entry_id")
     .references(() => entry.id, { onDelete: "cascade" })
     .notNull(),
-  createdAt: timestamp("created_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  updatedAt: timestamp("updated_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
+  ...meta,
 });
 
 export const vote = pgTable("vote", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  id: id(),
   userId: text("user_id")
     .references(() => user.id)
     .notNull(),
@@ -157,10 +154,5 @@ export const vote = pgTable("vote", {
   entryId: integer("entry_id")
     .references(() => entry.id, { onDelete: "cascade" })
     .notNull(),
-  createdAt: timestamp("created_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  updatedAt: timestamp("updated_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
+  ...meta,
 });

@@ -51,11 +51,7 @@ export default function NewCategoryButton(props: NewCategoryButtonProps) {
             schema: z.object({ name: z.string() }),
             action: async (data) => {
               const result = await createCategory({ data });
-              const category = result[0];
-              if (category === undefined) {
-                props.onError?.(new Error("Failed to create category"));
-              }
-              props.onSuccess?.(category);
+              props.onSuccess?.(result);
             },
           })}
         />

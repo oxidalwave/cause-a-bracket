@@ -1,5 +1,5 @@
 {
-  "id": "837e2946-ba22-4350-a718-e7781e6ff8da",
+  "id": "13c00bb7-e0f5-43e6-a6c4-630d480dd25e",
   "prevId": "d4925b2c-b4a5-43cf-a79f-995c46900283",
   "version": "7",
   "dialect": "postgresql",
@@ -148,9 +148,21 @@
           "primaryKey": false,
           "notNull": true
         },
+        "created_by": {
+          "name": "created_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -176,6 +188,32 @@
           "tableTo": "descriptor",
           "columnsFrom": [
             "descriptor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "bracket_created_by_user_id_fk": {
+          "name": "bracket_created_by_user_id_fk",
+          "tableFrom": "bracket",
+          "tableTo": "user",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "bracket_updated_by_user_id_fk": {
+          "name": "bracket_updated_by_user_id_fk",
+          "tableFrom": "bracket",
+          "tableTo": "user",
+          "columnsFrom": [
+            "updated_by"
           ],
           "columnsTo": [
             "id"
@@ -223,15 +261,54 @@
           "primaryKey": false,
           "notNull": true
         },
+        "created_by": {
+          "name": "created_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "category_created_by_user_id_fk": {
+          "name": "category_created_by_user_id_fk",
+          "tableFrom": "category",
+          "tableTo": "user",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "category_updated_by_user_id_fk": {
+          "name": "category_updated_by_user_id_fk",
+          "tableFrom": "category",
+          "tableTo": "user",
+          "columnsFrom": [
+            "updated_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "category_name_unique": {
@@ -279,15 +356,54 @@
           "primaryKey": false,
           "notNull": true
         },
+        "created_by": {
+          "name": "created_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "descriptor_created_by_user_id_fk": {
+          "name": "descriptor_created_by_user_id_fk",
+          "tableFrom": "descriptor",
+          "tableTo": "user",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "descriptor_updated_by_user_id_fk": {
+          "name": "descriptor_updated_by_user_id_fk",
+          "tableFrom": "descriptor",
+          "tableTo": "user",
+          "columnsFrom": [
+            "updated_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "descriptor_name_unique": {
@@ -353,9 +469,21 @@
           "primaryKey": false,
           "notNull": true
         },
+        "created_by": {
+          "name": "created_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -368,6 +496,32 @@
           "tableTo": "category",
           "columnsFrom": [
             "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "entry_created_by_user_id_fk": {
+          "name": "entry_created_by_user_id_fk",
+          "tableFrom": "entry",
+          "tableTo": "user",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "entry_updated_by_user_id_fk": {
+          "name": "entry_updated_by_user_id_fk",
+          "tableFrom": "entry",
+          "tableTo": "user",
+          "columnsFrom": [
+            "updated_by"
           ],
           "columnsTo": [
             "id"
@@ -427,9 +581,21 @@
           "primaryKey": false,
           "notNull": true
         },
+        "created_by": {
+          "name": "created_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -468,6 +634,32 @@
           "tableTo": "entry",
           "columnsFrom": [
             "right_entry_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "match_created_by_user_id_fk": {
+          "name": "match_created_by_user_id_fk",
+          "tableFrom": "match",
+          "tableTo": "user",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "match_updated_by_user_id_fk": {
+          "name": "match_updated_by_user_id_fk",
+          "tableFrom": "match",
+          "tableTo": "user",
+          "columnsFrom": [
+            "updated_by"
           ],
           "columnsTo": [
             "id"
@@ -722,9 +914,21 @@
           "primaryKey": false,
           "notNull": true
         },
+        "created_by": {
+          "name": "created_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -763,6 +967,32 @@
           "tableTo": "entry",
           "columnsFrom": [
             "entry_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "vote_created_by_user_id_fk": {
+          "name": "vote_created_by_user_id_fk",
+          "tableFrom": "vote",
+          "tableTo": "user",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "vote_updated_by_user_id_fk": {
+          "name": "vote_updated_by_user_id_fk",
+          "tableFrom": "vote",
+          "tableTo": "user",
+          "columnsFrom": [
+            "updated_by"
           ],
           "columnsTo": [
             "id"

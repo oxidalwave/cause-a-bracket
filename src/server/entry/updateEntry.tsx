@@ -3,8 +3,12 @@ import { eq } from "drizzle-orm";
 import { z } from "zod/v4";
 import db from "~/db/drizzle";
 import { entry } from "~/db/schema";
+import authMiddleware from "~/server/middleware/authMiddleware";
+import atomic from "~/server/utils/atomic";
+import { generateExistingMeta } from "~/server/utils/generateExistingMeta";
 
 const updateEntry = createServerFn()
+  .middleware([authMiddleware])
   .validator(
     z.object({
       id: z.number().int().min(1),
@@ -13,15 +17,18 @@ const updateEntry = createServerFn()
     }),
   )
   .handler(
-    async ({ data }) =>
-      await db
-        .update(entry)
-        .set({
-          name: data.name,
-          description: data.description,
-        })
-        .where(eq(entry.id, data.id))
-        .returning({ id: entry.id }),
+    async ({ context, data }) =>
+      await atomic(
+        db
+          .update(entry)
+          .set({
+            name: data.name,
+            description: data.description,
+            ...generateExistingMeta({ user: { id: context.session.user.id } }),
+          })
+          .where(eq(entry.id, data.id))
+          .returning({ id: entry.id }),
+      ),
   );
 
 export default updateEntry;
