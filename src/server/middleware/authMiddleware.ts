@@ -4,12 +4,9 @@ import { auth } from "~/lib/auth";
 
 const authMiddleware = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
-    const request = getWebRequest();
-    if (!request?.headers) {
-      throw new Error("No headers were found");
-    }
+    const { headers } = getWebRequest();
     const session = await auth.api.getSession({
-      headers: request.headers,
+      headers,
     });
     if (!session) {
       throw new Error("No session was found");
